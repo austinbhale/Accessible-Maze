@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/p5.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="style-brian.css" />
+    <meta charset="utf-8" />
+  </head>
+
+  <body>
+    <h1 class="title">LET'S GO TO SITTERSON!</h1>
+    <div class="column1">
+      <script src="sketch-brian.js"></script>
+    </div>
+    <div class="column2">
+      <div class="buttons">
+        <button id="upArrow" style="margin: 0 auto" onclick="moveUp()">
+          &uarr;
+        </button>
+        <div style="margin-left: 27%">
+          <button id="leftArrow" class="horizontal-button" onclick="moveLeft()">
+            &larr;
+          </button>
+          <button
+            id="rightArrow"
+            class="horizontal-button"
+            onclick="moveRight()"
+          >
+            &rarr;
+          </button>
+        </div>
+        <button id="downArrow" style="margin: 0 auto" onclick="moveDown()">
+          &darr;
+        </button>
+      </div>
+    </div>
+  </body>
+</html>
