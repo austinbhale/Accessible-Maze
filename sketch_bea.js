@@ -10,6 +10,7 @@ var currCellLoc = 0;
 var lineWeight = 6;
 
 function setup() {
+  createSound();
   createCanvas(900, 900);
   // frameRate(30);
   createNewMaze();
@@ -99,7 +100,7 @@ function createSound() {
   const posX = window.innerWidth / 2;
   const posY = window.innerHeight / 2;
   const posZ = 300;
-  originalPos = {x: posX, y: posY, z: posZ - 5};
+  originalPos = { x: posX, y: posY, z: posZ - 5 };
 
   // TODO: maybe find a way to attach it somehow?
   listener.forwardX.value = 0;
@@ -147,11 +148,8 @@ function createSound() {
   // const pannerOptions = { pan: 0 };
   // const panner = new StereoPannerNode(audioContext, pannerOptions);  
 }
-
 // More key presses for p5js can be found at https://p5js.org/reference/#/p5/keyPressed
 function keyPressed() {
-
-  if (track === undefined) createSound();
   track.connect(panner).connect(audioContext.destination);
 
   var next = undefined;
@@ -209,7 +207,7 @@ function keyPressed() {
     // Find the walls and play the sound
     if (current.walls[0]) {
       //up
-      panner.positionZ.value += 100;
+      panner.positionZ.value += 300;
     } else if (current.walls[1]) {
       //right
       panner.positionX.value += 100;
