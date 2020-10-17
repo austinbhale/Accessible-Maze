@@ -24,6 +24,7 @@ function setup() {
 
 // Current cell goes back to the top left starting position.
 function createNewMaze() {
+  if (document.activeElement != document.body) document.activeElement.blur();
   clear();
   grid = [];
   stack = [];
@@ -47,7 +48,7 @@ function createNewMaze() {
     }
 
     current.visited = true;
-    var next = current.checkNeighbors();
+    let next = current.checkNeighbors();
 
     if (next) {
       next.visited = true;
@@ -76,7 +77,13 @@ function createNewMaze() {
 
 // More key presses for p5js can be found at https://p5js.org/reference/#/p5/keyPressed
 function keyPressed() {
-  var next = undefined;
+  if (keyCode == ENTER) {
+    console.log("enter");
+    createNewMaze();
+    return;
+  }
+
+  let next = undefined;
   if (keyCode == UP_ARROW) {
     console.log("up");
     if (!current.walls[0]) {
@@ -105,10 +112,6 @@ function keyPressed() {
       next = grid[currCellLoc];
       document.getElementById("leftArrow").focus();
     }
-  } else if (keyCode == ENTER) {
-    console.log("enter");
-    createNewMaze();
-    return;
   }
 
   if (next !== undefined) {
@@ -235,82 +238,86 @@ function removeWalls(a, b) {
   }
 }
 
-function moveUp(){
+function moveUp() {
+  let next = undefined;
   console.log("up");
-    if (!current.walls[0]) {
-      currCellLoc -= cols;
-      next = grid[currCellLoc];
-    }
+  if (!current.walls[0]) {
+    currCellLoc -= cols;
+    next = grid[currCellLoc];
+  }
 
-    if(next!==undefined){
+  if (next !== undefined) {
 
-      erase();
-      current.highlightPlayer(0, 0, 0, true);
-      noErase();
-      current.highlightPlayer(75, 156, 211, true);
-  
-      // Highlight the valid next position given by the user
-      current = next;
-      current.highlightPlayer(0, 255, 0, false);
-    }
+    erase();
+    current.highlightPlayer(0, 0, 0, true);
+    noErase();
+    current.highlightPlayer(75, 156, 211, true);
+
+    // Highlight the valid next position given by the user
+    current = next;
+    current.highlightPlayer(0, 255, 0, false);
+  }
 }
 
-function moveDown(){
+function moveDown() {
+  let next = undefined;
   console.log("down");
-    if (!current.walls[2]) {
-      currCellLoc += cols;
-      next = grid[currCellLoc];
-    }
+  if (!current.walls[2]) {
+    currCellLoc += cols;
+    next = grid[currCellLoc];
+  }
 
-    if(next !== undefined){
+  if (next !== undefined) {
 
-      erase();
-      current.highlightPlayer(0, 0, 0, true);
-      noErase();
-      current.highlightPlayer(75, 156, 211, true);
-  
-      // Highlight the valid next position given by the user
-      current = next;
-      current.highlightPlayer(0, 255, 0, false);
-    }
+    erase();
+    current.highlightPlayer(0, 0, 0, true);
+    noErase();
+    current.highlightPlayer(75, 156, 211, true);
+
+    // Highlight the valid next position given by the user
+    current = next;
+    current.highlightPlayer(0, 255, 0, false);
+  }
 }
 
-function moveLeft(){
+function moveLeft() {
+  let next = undefined;
   console.log("left");
-    if (!current.walls[3]) {
-      currCellLoc -= 1;
-      next = grid[currCellLoc];
-    }
+  if (!current.walls[3]) {
+    currCellLoc -= 1;
+    next = grid[currCellLoc];
+  }
 
-    if(next !== undefined){
+  if (next !== undefined) {
 
-      erase();
-      current.highlightPlayer(0, 0, 0, true);
-      noErase();
-      current.highlightPlayer(75, 156, 211, true);
-  
-      // Highlight the valid next position given by the user
-      current = next;
-      current.highlightPlayer(0, 255, 0, false);
-    }
+    erase();
+    current.highlightPlayer(0, 0, 0, true);
+    noErase();
+    current.highlightPlayer(75, 156, 211, true);
+
+    // Highlight the valid next position given by the user
+    current = next;
+    current.highlightPlayer(0, 255, 0, false);
+  }
 }
 
-function moveRight(){
+function moveRight() {
+  let next = undefined;
   console.log("right");
-    if (!current.walls[1]) {
-      currCellLoc += 1;
-      next = grid[currCellLoc];
-    }
+  if (!current.walls[1]) {
+    currCellLoc += 1;
+    next = grid[currCellLoc];
+  }
 
-    if(next !== undefined){
+  if (next !== undefined) {
 
-      erase();
-      current.highlightPlayer(0, 0, 0, true);
-      noErase();
-      current.highlightPlayer(75, 156, 211, true);
-  
-      // Highlight the valid next position given by the user
-      current = next;
-      current.highlightPlayer(0, 255, 0, false);
-    }
+    erase();
+    current.highlightPlayer(0, 0, 0, true);
+    noErase();
+    current.highlightPlayer(75, 156, 211, true);
+
+    // Highlight the valid next position given by the user
+    current = next;
+    current.highlightPlayer(0, 255, 0, false);
+  }
 }
