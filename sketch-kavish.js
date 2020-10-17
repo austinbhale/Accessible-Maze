@@ -1,5 +1,6 @@
 var cols, rows;
-var w = 100; // width of each square
+var w = 200; // width of each square
+var counter = 0; //counter for number of times a level has been played
 var grid = [];
 var stack = [];
 var current; // the player's current cell
@@ -18,7 +19,7 @@ function setup() {
 function button() {
     var button = createButton("Next Level");
     button.mousePressed(nextLevel);
-    button.position(800, 850);
+    button.position(width-100, height-50);
     button.size(100, 50);
     button.style('font-size : 20px; background-color: #555555; color:white');
     /* if (levelCleared) {
@@ -35,7 +36,10 @@ function button() {
 }
 
 function nextLevel() {
-    w -= 10;
+    if (counter % 3 === 0 &&  counter != 0) {
+      w /= 2;
+      counter = 0;
+    }
     console.log("next level");
     createNewMaze();
     return;
@@ -130,8 +134,12 @@ function keyPressed() {
     }
   } else if (keyCode == ENTER) {
     console.log("enter");
+    counter++;
     createNewMaze();
     return;
+  } else if(keyCode == SHIFT) {
+    console.log("next level");
+    nextLevel();
   }
 
   if (next !== undefined) {
