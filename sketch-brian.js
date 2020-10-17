@@ -82,24 +82,28 @@ function keyPressed() {
     if (!current.walls[0]) {
       currCellLoc -= cols;
       next = grid[currCellLoc];
+      document.getElementById("upArrow").focus();
     }
   } else if (keyCode == RIGHT_ARROW) {
     console.log("right");
     if (!current.walls[1]) {
       currCellLoc += 1;
       next = grid[currCellLoc];
+      document.getElementById("rightArrow").focus();
     }
   } else if (keyCode == DOWN_ARROW) {
     console.log("down");
     if (!current.walls[2]) {
       currCellLoc += cols;
       next = grid[currCellLoc];
+      document.getElementById("downArrow").focus();
     }
   } else if (keyCode == LEFT_ARROW) {
     console.log("left");
     if (!current.walls[3]) {
       currCellLoc -= 1;
       next = grid[currCellLoc];
+      document.getElementById("leftArrow").focus();
     }
   } else if (keyCode == ENTER) {
     console.log("enter");
@@ -237,14 +241,18 @@ function moveUp(){
       currCellLoc -= cols;
       next = grid[currCellLoc];
     }
-    erase();
-    current.highlightPlayer(0, 0, 0, true);
-    noErase();
-    current.highlightPlayer(75, 156, 211, true);
 
-    // Highlight the valid next position given by the user
-    current = next;
-    current.highlightPlayer(0, 255, 0, false);
+    if(next!==undefined){
+
+      erase();
+      current.highlightPlayer(0, 0, 0, true);
+      noErase();
+      current.highlightPlayer(75, 156, 211, true);
+  
+      // Highlight the valid next position given by the user
+      current = next;
+      current.highlightPlayer(0, 255, 0, false);
+    }
 }
 
 function moveDown(){
@@ -253,14 +261,18 @@ function moveDown(){
       currCellLoc += cols;
       next = grid[currCellLoc];
     }
-    erase();
-    current.highlightPlayer(0, 0, 0, true);
-    noErase();
-    current.highlightPlayer(75, 156, 211, true);
 
-    // Highlight the valid next position given by the user
-    current = next;
-    current.highlightPlayer(0, 255, 0, false);
+    if(next !== undefined){
+
+      erase();
+      current.highlightPlayer(0, 0, 0, true);
+      noErase();
+      current.highlightPlayer(75, 156, 211, true);
+  
+      // Highlight the valid next position given by the user
+      current = next;
+      current.highlightPlayer(0, 255, 0, false);
+    }
 }
 
 function moveLeft(){
@@ -269,14 +281,18 @@ function moveLeft(){
       currCellLoc -= 1;
       next = grid[currCellLoc];
     }
-    erase();
-    current.highlightPlayer(0, 0, 0, true);
-    noErase();
-    current.highlightPlayer(75, 156, 211, true);
 
-    // Highlight the valid next position given by the user
-    current = next;
-    current.highlightPlayer(0, 255, 0, false);
+    if(next !== undefined){
+
+      erase();
+      current.highlightPlayer(0, 0, 0, true);
+      noErase();
+      current.highlightPlayer(75, 156, 211, true);
+  
+      // Highlight the valid next position given by the user
+      current = next;
+      current.highlightPlayer(0, 255, 0, false);
+    }
 }
 
 function moveRight(){
@@ -285,12 +301,16 @@ function moveRight(){
       currCellLoc += 1;
       next = grid[currCellLoc];
     }
-    erase();
-    current.highlightPlayer(0, 0, 0, true);
-    noErase();
-    current.highlightPlayer(75, 156, 211, true);
 
-    // Highlight the valid next position given by the user
-    current = next;
-    current.highlightPlayer(0, 255, 0, false);
+    if(next !== undefined){
+
+      erase();
+      current.highlightPlayer(0, 0, 0, true);
+      noErase();
+      current.highlightPlayer(75, 156, 211, true);
+  
+      // Highlight the valid next position given by the user
+      current = next;
+      current.highlightPlayer(0, 255, 0, false);
+    }
 }

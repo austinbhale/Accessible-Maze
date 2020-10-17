@@ -13,14 +13,24 @@
     </div>
     <div class="column2">
       <div class="buttons">
-        <button style="margin: 0 auto" onclick="moveUp()">&uarr;</button>
+        <button id="upArrow" style="margin: 0 auto" onclick="moveUp()">
+          &uarr;
+        </button>
         <div style="margin-left: 27%">
-          <button class="horizontal-button" onclick="moveLeft()">&larr;</button>
-          <button class="horizontal-button" onclick="moveRight()">
+          <button id="leftArrow" class="horizontal-button" onclick="moveLeft()">
+            &larr;
+          </button>
+          <button
+            id="rightArrow"
+            class="horizontal-button"
+            onclick="moveRight()"
+          >
             &rarr;
           </button>
         </div>
-        <button style="margin: 0 auto" onclick="moveDown()">&darr;</button>
+        <button id="downArrow" style="margin: 0 auto" onclick="moveDown()">
+          &darr;
+        </button>
       </div>
     </div>
   </body>
