@@ -78,16 +78,16 @@ function createNewMaze() {
   line(900, 0, 0, 0);
 }
 
-
-// More key presses for p5js can be found at https://p5js.org/reference/#/p5/keyPressed
-function keyPressed() {
+// Global vars for audio
+var track, audioContext, audioElement, panner, originalPos;
+function createSound() {
   // establish audio context
   const AudioContext = window.AudioContext || window.webkitAudioContext;
-  let audioContext = new AudioContext;
+  audioContext = new AudioContext;
   // get audio element
-  var audioElement = document.querySelector('audio')
+  audioElement = document.querySelector('audio')
   // pass track into audio context
-  var track = audioContext.createMediaElementSource(audioElement);
+  track = audioContext.createMediaElementSource(audioElement);
   // connect track to context
   // track.connect(audioContext.destination);
 
@@ -96,9 +96,10 @@ function keyPressed() {
 
 
   // set in the center of the screen
-  const posX = window.innerWidth/2;
-  const posY = window.innerHeight/2;
+  const posX = window.innerWidth / 2;
+  const posY = window.innerHeight / 2;
   const posZ = 300;
+  originalPos = {x: posX, y: posY, z: posZ - 5};
 
   // TODO: maybe find a way to attach it somehow?
   listener.forwardX.value = 0;
@@ -106,10 +107,10 @@ function keyPressed() {
   listener.upZ.value = 0;
 
   // situate the listener object
-  listener.positionX.value = posX;
-  listener.positionY.value = posY;
-  listener.positionZ.value = posZ-5;
-  
+  listener.positionX.value = originalPos.x;
+  listener.positionY.value = originalPos.y;
+  listener.positionZ.value = originalPos.z;
+
 
   const pannerModel = 'HRTF';
   const innerCone = 60;
@@ -127,7 +128,7 @@ function keyPressed() {
   const orientationZ = -1.0;
 
 
-  const panner = new PannerNode(audioContext, {
+  panner = new PannerNode(audioContext, {
     panningModel: pannerModel,
     distanceModel: distanceModel,
     positionX: positionX,
@@ -142,11 +143,16 @@ function keyPressed() {
     coneInnerAngle: innerCone,
     coneOuterAngle: outerCone,
     coneOuterGain: outerGain
-})
-// const pannerOptions = { pan: 0 };
-// const panner = new StereoPannerNode(audioContext, pannerOptions);
+  })
+  // const pannerOptions = { pan: 0 };
+  // const panner = new StereoPannerNode(audioContext, pannerOptions);  
+}
 
-track.connect(panner).connect(audioContext.destination)
+// More key presses for p5js can be found at https://p5js.org/reference/#/p5/keyPressed
+function keyPressed() {
+
+  if (track === undefined) createSound();
+  track.connect(panner).connect(audioContext.destination);
 
   var next = undefined;
   if (keyCode == UP_ARROW) {
@@ -154,39 +160,31 @@ track.connect(panner).connect(audioContext.destination)
     if (!current.walls[0]) {
       currCellLoc -= cols;
       next = grid[currCellLoc];
-      panner.positionZ.value += 100;
-      audioElement.play();
     }
   } else if (keyCode == RIGHT_ARROW) {
     console.log("right");
     if (!current.walls[1]) {
       currCellLoc += 1;
       next = grid[currCellLoc];
-      panner.positionX.value += 100;
-      audioElement.play();
     }
   } else if (keyCode == DOWN_ARROW) {
     console.log("down");
     if (!current.walls[2]) {
       currCellLoc += cols;
       next = grid[currCellLoc];
-      panner.positionY.value -= 500;
-      audioElement.play();
     }
   } else if (keyCode == LEFT_ARROW) {
     console.log("left");
     if (!current.walls[3]) {
       currCellLoc -= 1;
       next = grid[currCellLoc];
-      panner.positionY.value -= 500;
-      audioElement.play();
     }
   } else if (keyCode == ENTER) {
     console.log("enter");
     createNewMaze();
     // add sound
 
-    return;
+    next = undefined;
   }
 
   // place a new cell   
@@ -195,13 +193,34 @@ track.connect(panner).connect(audioContext.destination)
     erase();
     current.highlightPlayer(0, 0, 0, true);
     noErase();
-    
+
 
     current.highlightPlayer(75, 156, 211, true);
 
     // Highlight the valid next position given by the user
     current = next;
     current.highlightPlayer(0, 255, 0, false);
+
+    // Reset panner position back to the center
+    panner.positionX.value = originalPos.x;
+    panner.positionY.value = originalPos.y;
+    panner.positionZ.value = originalPos.z;
+
+    // Find the walls and play the sound
+    if (current.walls[0]) {
+      //up
+      panner.positionZ.value += 100;
+    } else if (current.walls[1]) {
+      //right
+      panner.positionX.value += 100;
+    } else if (current.walls[2]) {
+      //down
+      panner.positionY.value -= 500;
+    } else if (current.walls[3]) {
+      //left
+      panner.positionY.value -= 500;
+    }
+    audioElement.play();
   }
 
   // audioContext.close()
@@ -319,3 +338,13 @@ function removeWalls(a, b) {
     b.walls[0] = false;
   }
 }
+
+
+document.documentElement.addEventListener(
+  "mousedown", function () {
+    if (window.Tone) {
+      if (window.Tone.context.state !== 'running') {
+        Tone.context.resume();
+      }
+    }
+  })
