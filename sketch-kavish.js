@@ -5,6 +5,7 @@ var grid = [];
 var stack = [];
 var current; // the player's current cell
 var currCellLoc = 0;
+var randRow = 0;
 
 // Setup(): line pixel weight. Even numbers only
 var lineWeight = 6;
@@ -39,6 +40,8 @@ function nextLevel() {
     if (counter % 3 === 0 &&  counter != 0) {
       w /= 2;
       counter = 0;
+    } else {
+      counter++;
     }
     console.log("next level");
     createNewMaze();
@@ -63,6 +66,9 @@ function createNewMaze() {
   // floor function makes sure that we are dealing with integers, no matter the canvas size
   cols = floor(width / w);
   rows = floor(height / w);
+
+  // gets random row for endSquare
+  randRow = randomNumber(0, rows-1);
 
   for (var j = 0; j < rows; j++) {
     for (var i = 0; i < cols; i++) {
@@ -139,6 +145,7 @@ function keyPressed() {
     return;
   } else if(keyCode == SHIFT) {
     console.log("next level");
+    counter++;
     nextLevel();
   }
 
@@ -147,7 +154,7 @@ function keyPressed() {
     erase();
     current.highlightPlayer(0, 0, 0, true);
     noErase();
-    current.highlightPlayer(75, 156, 211, true);
+    current.highlightPlayer(75, 156, 211, true);            //background color
 
     // Highlight the valid next position given by the user
     current = next;
@@ -229,9 +236,15 @@ function Cell(i, j) {
       fill(0, 0, 0);
       rect(x + (lineWeight / 2), y + (lineWeight / 2), w, w);
       noErase();
-      // Draw
+      // Draw (background color)
       fill(75, 156, 211); // TarHeel blue background
       rect(x + (lineWeight / 2), y + (lineWeight / 2), w, w);
+
+      // Places endSquare on top
+      let lastCol = (Math.sqrt(grid.length)) - 1;
+      noStroke();
+      fill(51, 153, 51); // TarHeel blue background
+      rect(lastCol*w, randRow*w, w-5, w-5);
     }
   }
 
@@ -264,4 +277,11 @@ function removeWalls(a, b) {
     a.walls[2] = false;
     b.walls[0] = false;
   }
+}
+
+// Gets random border tile to use as endSquare (min, max inclusive)
+function randomNumber(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
