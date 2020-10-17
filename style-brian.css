@@ -1,0 +1,40 @@
+html {
+  margin: 0;
+  padding: 0;
+  background-color: white;
+}
+h1 {
+  text-align: center;
+}
+
+.column1 {
+  float: left;
+  width: 80%;
+}
+
+.column2 {
+  float: right;
+  width: 20%;
+  margin-top: 10%;
+  left: 80%;
+  position: fixed;
+}
+
+button {
+  background-color: lightblue; /* Green */
+  border: none;
+  color: white;
+  padding: 20px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 50%;
+  display: block;
+}
+
+.horizontal-button {
+  display: inline-block;
+  margin: 0 auto;
+}
