@@ -9,6 +9,10 @@ var currCellLoc = 0;
 // Setup(): line pixel weight. Even numbers only
 var lineWeight = 6;
 
+function preload() {
+  createSound();
+}
+
 function setup() {
   createCanvas(900, 900);
   // frameRate(30);
@@ -78,16 +82,16 @@ function createNewMaze() {
   line(900, 0, 0, 0);
 }
 
-
-// More key presses for p5js can be found at https://p5js.org/reference/#/p5/keyPressed
-function keyPressed() {
+// Global vars for audio
+var track, audioContext, audioElement, panner;
+function createSound() {
   // establish audio context
   const AudioContext = window.AudioContext || window.webkitAudioContext;
-  let audioContext = new AudioContext;
+  audioContext = new AudioContext;
   // get audio element
-  var audioElement = document.querySelector('audio')
+  audioElement = document.querySelector('audio')
   // pass track into audio context
-  var track = audioContext.createMediaElementSource(audioElement);
+  track = audioContext.createMediaElementSource(audioElement);
   // connect track to context
   // track.connect(audioContext.destination);
 
@@ -96,8 +100,8 @@ function keyPressed() {
 
 
   // set in the center of the screen
-  const posX = window.innerWidth/2;
-  const posY = window.innerHeight/2;
+  const posX = window.innerWidth / 2;
+  const posY = window.innerHeight / 2;
   const posZ = 300;
 
   // TODO: maybe find a way to attach it somehow?
@@ -108,8 +112,8 @@ function keyPressed() {
   // situate the listener object
   listener.positionX.value = posX;
   listener.positionY.value = posY;
-  listener.positionZ.value = posZ-5;
-  
+  listener.positionZ.value = posZ - 5;
+
 
   const pannerModel = 'HRTF';
   const innerCone = 60;
@@ -127,7 +131,7 @@ function keyPressed() {
   const orientationZ = -1.0;
 
 
-  const panner = new PannerNode(audioContext, {
+  panner = new PannerNode(audioContext, {
     panningModel: pannerModel,
     distanceModel: distanceModel,
     positionX: positionX,
@@ -142,11 +146,15 @@ function keyPressed() {
     coneInnerAngle: innerCone,
     coneOuterAngle: outerCone,
     coneOuterGain: outerGain
-})
-// const pannerOptions = { pan: 0 };
-// const panner = new StereoPannerNode(audioContext, pannerOptions);
+  })
+  // const pannerOptions = { pan: 0 };
+  // const panner = new StereoPannerNode(audioContext, pannerOptions);  
+}
 
-track.connect(panner).connect(audioContext.destination)
+// More key presses for p5js can be found at https://p5js.org/reference/#/p5/keyPressed
+function keyPressed() {
+
+  track.connect(panner).connect(audioContext.destination)
 
   var next = undefined;
   if (keyCode == UP_ARROW) {
@@ -195,7 +203,7 @@ track.connect(panner).connect(audioContext.destination)
     erase();
     current.highlightPlayer(0, 0, 0, true);
     noErase();
-    
+
 
     current.highlightPlayer(75, 156, 211, true);
 
