@@ -1,12 +1,29 @@
 var cols, rows;
-var w = 50; // width of each square
+var w = 100; // width of each square
 var grid = [];
 var stack = [];
 var current; // the player's current cell
 var currCellLoc = 0;
+var levelNumber = 0;
 
 // Setup(): line pixel weight. Even numbers only
 var lineWeight = 6;
+
+imgs = [];
+function preload() {
+    imgs.push(loadImage('imgs/profs/bishop.jpeg'));
+    imgs.push(loadImage('imgs/profs/fuchs.png'));
+    imgs.push(loadImage('imgs/profs/jeffay.png'));
+    imgs.push(loadImage('imgs/profs/kmp.jpeg'));
+    imgs.push(loadImage('imgs/profs/kris.jpg'));
+    imgs.push(loadImage('imgs/profs/majikes.jpg'));
+    imgs.push(loadImage('imgs/profs/mcmillan.jpeg'));
+    imgs.push(loadImage('imgs/profs/pizer.jpeg'));
+    imgs.push(loadImage('imgs/profs/singh.jpeg'));
+    imgs.push(loadImage('imgs/profs/stotts.jpeg'));
+    imgs.push(loadImage('imgs/profs/tessa.jpg'));
+    imgs.push(loadImage('imgs/profs/plaisted.jpeg'));
+}
 
 function setup() {
     createCanvas(900, 900);
@@ -206,7 +223,7 @@ function Cell(i, j) {
         var y = this.j * w;
         noStroke();
         fill(r, g, b);
-        (erase) ? rect(x + (w / 6), y + (w / 6), w / 1.5, w / 1.5) : rect(x + (w / 4), y + (w / 4), w / 2, w / 2);
+        (erase) ? rect(x + (w / 6), y + (w / 6), w / 1.5, w / 1.5) : image(imgs[levelNumber], x + (w / 4), y + (w / 4), w / 2, w / 2);
     }
 
     // Draw a bit extra after erasing
