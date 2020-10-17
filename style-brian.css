@@ -5,6 +5,7 @@ html {
 }
 h1 {
   text-align: center;
+  text-shadow: 1px 1px #000;
 }
 
 .column1 {
