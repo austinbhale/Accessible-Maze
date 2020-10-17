@@ -1,5 +1,5 @@
 var cols, rows;
-var w = 100; // width of each square
+var w = 50; // width of each square
 var grid = [];
 var stack = [];
 var current; // the player's current cell
