@@ -234,29 +234,6 @@ function keyPressed() {
     current = next;
     current.highlightPlayer(0, 255, 0, false);
 
-<<<<<<< HEAD
-
-=======
-    // Reset panner position back to the center
-    panner.positionX.value = originalPos.x;
-    panner.positionY.value = originalPos.y;
-    panner.positionZ.value = originalPos.z;
-
-    // Find the walls and play the sound
-    if (current.walls[0]) { //top
-      panner.positionY.value += 300;
-    } 
-    if (current.walls[1]) { //right
-      panner.positionX.value += 300;
-    } 
-    if (current.walls[2]) { //bottom
-      panner.positionY.value -= 300;
-    } 
-    if (current.walls[3]) { //left
-      panner.positionX.value -= 300;
-    }
-    audioElement.play();
->>>>>>> be1118a5da2c63feceb8ba42aa4088ff19542308
   }
 
   // audioContext.close()
