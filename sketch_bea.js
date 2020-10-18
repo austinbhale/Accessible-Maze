@@ -14,7 +14,7 @@ var lineWeight = 6;
 function setup() {
   createCanvas(900, 900);
   // frameRate(30);
-  //createNewMaze();
+  createNewMaze();
 }
 
 // draw() loops forever until stopped. Set fps with frameRate(30)
@@ -81,15 +81,19 @@ function createNewMaze() {
 }
 
 // Global vars for audio
-var track, audioContext, audioElement, panner, originalPos;
+var track, audioContext, successSound, panner, originalPos;
 function createSound() {
   // establish audio context
   const AudioContext = window.AudioContext || window.webkitAudioContext;
   audioContext = new AudioContext;
   // get audio element
-  audioElement = document.querySelector('audio')
+  successSound = document.querySelector('#success')
+  failSound = document.querySelector("#fail")
+
+
+  
   // pass track into audio context
-  track = audioContext.createMediaElementSource(audioElement);
+  track = audioContext.createMediaElementSource(failSound)
   // connect track to context
   // track.connect(audioContext.destination);
 
@@ -155,29 +159,58 @@ function keyPressed() {
   track.connect(panner).connect(audioContext.destination);
 
   var next = undefined;
+  // Reset panner position back to the center
+  panner.positionX.value = originalPos.x;
+  panner.positionY.value = originalPos.y;
+  panner.positionZ.value = originalPos.z;
+
   if (keyCode == UP_ARROW) {
     console.log("up");
     if (!current.walls[0]) {
+      console.log("SUCCESS!")
       currCellLoc -= cols;
       next = grid[currCellLoc];
+      successSound.play()
+    } else {
+      console.log("hit a wall...")
+      panner.positionY.value += 5000;
+      failSound.play()
     }
   } else if (keyCode == RIGHT_ARROW) {
     console.log("right");
     if (!current.walls[1]) {
+      console.log("SUCCESS!")
       currCellLoc += 1;
       next = grid[currCellLoc];
+      successSound.play()
+    } else {
+      console.log("hit a wall...")
+      panner.positionX.value += 5000;
+      failSound.play()
     }
   } else if (keyCode == DOWN_ARROW) {
     console.log("down");
     if (!current.walls[2]) {
+      console.log("SUCCESS!")
       currCellLoc += cols;
       next = grid[currCellLoc];
+      successSound.play()
+    } else {
+      console.log("hit a wall...")
+      panner.positionY.value -= 5000;
+      failSound.play()
     }
   } else if (keyCode == LEFT_ARROW) {
     console.log("left");
     if (!current.walls[3]) {
+      console.log("SUCCESS!")
       currCellLoc -= 1;
       next = grid[currCellLoc];
+      successSound.play()
+    } else {
+      console.log("hit a wall...")
+      panner.positionX.value -= 5000;
+      failSound.play()
     }
   } else if (keyCode == ENTER) {
     console.log("enter");
@@ -201,26 +234,7 @@ function keyPressed() {
     current = next;
     current.highlightPlayer(0, 255, 0, false);
 
-    // Reset panner position back to the center
-    panner.positionX.value = originalPos.x;
-    panner.positionY.value = originalPos.y;
-    panner.positionZ.value = originalPos.z;
 
-    // Find the walls and play the sound
-    if (current.walls[0]) {
-      //up
-      panner.positionZ.value += 300;
-    } else if (current.walls[1]) {
-      //right
-      panner.positionX.value += 100;
-    } else if (current.walls[2]) {
-      //down
-      panner.positionY.value -= 500;
-    } else if (current.walls[3]) {
-      //left
-      panner.positionY.value -= 500;
-    }
-    audioElement.play();
   }
 
   // audioContext.close()
