@@ -1,17 +1,105 @@
 var cols, rows;
-var w = 150; // width of each square
+var w = 400; // width of each square
+var counter = 1; //counter for number of times a level has been played
 var grid = [];
 var stack = [];
 var current; // the player's current cell
 var currCellLoc = 0;
+var randRow = 0;
+var lastCol = 0;
+var level = 1;
+var profIdx = 0;
 
 // Setup(): line pixel weight. Even numbers only
 var lineWeight = 6;
 
+var play = false;
+
+var imgs = [];
+var imgSit;
+function preload() {
+  imgs.push(loadImage('imgs/profs/bishop.jpeg'));
+  imgs.push(loadImage('imgs/profs/fuchs.png'));
+  imgs.push(loadImage('imgs/profs/jeffay.png'));
+  imgs.push(loadImage('imgs/profs/kmp.jpeg'));
+  imgs.push(loadImage('imgs/profs/kris.jpg'));
+  imgs.push(loadImage('imgs/profs/majikes.jpg'));
+  imgs.push(loadImage('imgs/profs/mcmillan.jpeg'));
+  imgs.push(loadImage('imgs/profs/pizer.jpeg'));
+  imgs.push(loadImage('imgs/profs/singh.jpeg'));
+  imgs.push(loadImage('imgs/profs/stotts.jpeg'));
+  imgs.push(loadImage('imgs/profs/tessa.jpg'));
+  imgs.push(loadImage('imgs/profs/plaisted.jpeg'));
+  imgSit = loadImage('imgs/sitterson.jpg');
+}
+
 function setup() {
-  createCanvas(900, 900);
+  createCanvas(800, 800);
   // frameRate(30);
+  // createNewMaze();
+  // newMazeButton();
+  // previousLevelButton();
+}
+
+function newMazeButton() {
+  var button = createButton("New Maze");
+  button.mousePressed(createNewMaze);
+  button.position(width - 100, height - 50);
+  button.size(100, 50);
+  button.style('font-size : 20px; background-color: #555555; color:white');
+  return;
+}
+
+function previousLevelButton() {
+  var button = createButton("Previous Level");
+  button.mousePressed(previousLevel);
+  button.position(width - 210, height - 50);
+  button.size(100, 50);
+  button.style('font-size : 20px; background-color: #555555; color:white');
+  return;
+}
+
+function playAgainButton() {
+  var button = createButton("Play Again");
+  button.position(width - 320, height - 50);
+  button.size(100, 50);
+  button.style('font-size : 20px; background-color: #555555; color:white');
+  button.mousePressed(playAgain);
+  return;
+}
+
+
+function nextLevel() {
+  if (counter % 3 === 0 && counter != 0) {
+    w /= 2;
+    level++;
+    console.log("next level");
+    counter = 1;
+  } else {
+    counter++;
+  }
+  console.log("Counter = " + counter);
   createNewMaze();
+  return;
+}
+
+function previousLevel() {
+  if (level > 1) {
+    w *= 2;
+    level -= 1;
+    counter = 1;
+  }
+  createNewMaze();
+  return;
+}
+
+function playAgain() {
+  w = w * (Math.pow(2, level - 1));
+  level = 1;
+  counter = 1;
+  createNewMaze();
+  this.hide();
+  return;
 }
 
 // draw() loops forever until stopped. Set fps with frameRate(30)
@@ -32,6 +120,9 @@ function createNewMaze() {
   // floor function makes sure that we are dealing with integers, no matter the canvas size
   cols = floor(width / w);
   rows = floor(height / w);
+
+  // gets random row for endSquare
+  randRow = randomNumber(0, rows - 1);
 
   for (var j = 0; j < rows; j++) {
     for (var i = 0; i < cols; i++) {
@@ -68,56 +159,99 @@ function createNewMaze() {
   // Draws a black border on the canvas
   strokeWeight(lineWeight);
   stroke(0);
-  line(0, 0, 0, 900);
-  line(0, 900, 900, 900);
-  line(900, 900, 900, 0);
-  line(900, 0, 0, 0);
+  line(0, 0, 0, height);
+  line(0, height, width, height);
+  line(width, height, width, 0);
+  line(width, 0, 0, 0);
 }
 
 // More key presses for p5js can be found at https://p5js.org/reference/#/p5/keyPressed
 function keyPressed() {
-  var next = undefined;
+  if (!play) return;
+  track.connect(panner).connect(audioContext.destination);
+
+  let next = undefined;
+  // Reset panner position back to the center
+  panner.positionX.value = originalPos.x;
+  panner.positionY.value = originalPos.y;
+  panner.positionZ.value = originalPos.z;
+
   if (keyCode == UP_ARROW) {
     console.log("up");
     if (!current.walls[0]) {
+      console.log("SUCCESS!")
       currCellLoc -= cols;
       next = grid[currCellLoc];
+      successSound.play();
+      document.getElementById("upArrow").focus();
+    } else {
+      console.log("hit a wall...")
+      panner.positionY.value += 5000;
+      failSound.play()
     }
   } else if (keyCode == RIGHT_ARROW) {
     console.log("right");
     if (!current.walls[1]) {
+      console.log("SUCCESS!")
       currCellLoc += 1;
       next = grid[currCellLoc];
+      successSound.play();
+      document.getElementById("rightArrow").focus();
+    } else {
+      console.log("hit a wall...")
+      panner.positionX.value += 5000;
+      failSound.play()
     }
   } else if (keyCode == DOWN_ARROW) {
     console.log("down");
     if (!current.walls[2]) {
+      console.log("SUCCESS!")
       currCellLoc += cols;
       next = grid[currCellLoc];
+      successSound.play();
+      document.getElementById("downArrow").focus();
+    } else {
+      console.log("hit a wall...")
+      panner.positionY.value -= 5000;
+      failSound.play()
     }
   } else if (keyCode == LEFT_ARROW) {
     console.log("left");
     if (!current.walls[3]) {
+      console.log("SUCCESS!")
       currCellLoc -= 1;
       next = grid[currCellLoc];
+      successSound.play();
+      document.getElementById("leftArrow").focus();
+    } else {
+      console.log("hit a wall...")
+      panner.positionX.value -= 5000;
+      failSound.play()
     }
   } else if (keyCode == ENTER) {
     console.log("enter");
     createNewMaze();
     return;
+  } else if (keyCode == SHIFT) { //previous level 
+    console.log("shift: previous level");
+    previousLevel();
   }
 
+  // place a new cell   
   if (next !== undefined) {
     // Erase so we're not drawing on top of a color
     erase();
     current.highlightPlayer(0, 0, 0, true);
     noErase();
-    current.highlightPlayer(75, 156, 211, true);
+    current.fillAfterErase(75, 156, 211);
 
     // Highlight the valid next position given by the user
     current = next;
     current.highlightPlayer(0, 255, 0, false);
+    current.mazeCleared();
   }
+
+  // audioContext.close()
 }
 
 // Setup()
@@ -194,10 +328,45 @@ function Cell(i, j) {
       fill(0, 0, 0);
       rect(x + (lineWeight / 2), y + (lineWeight / 2), w, w);
       noErase();
-      // Draw
+      // Draw (background color)
       fill(75, 156, 211); // TarHeel blue background
       rect(x + (lineWeight / 2), y + (lineWeight / 2), w, w);
+
+      // Places endSquare on top
+      lastCol = (Math.sqrt(grid.length)) - 1;
+      noStroke();
+      fill(51, 153, 51); // dark green background
+      image(imgSit, lastCol * w + (lineWeight / 2), randRow * w + (lineWeight / 2), w, w - lineWeight);
     }
+  }
+
+  // Draw a bit extra after erasing
+  this.fillAfterErase = function (r, g, b) {
+    var x = this.i * w;
+    var y = this.j * w;
+    noStroke();
+    fill(r, g, b);
+    rect(x + (w / 8), y + (w / 8), 3 * w / 4, 3 * w / 4);
+  }
+
+  //checks if current maze has been completed and goes to the next maze/level
+  // depending on the counter's value 
+  this.mazeCleared = function () {
+    var currRow = floor(currCellLoc / cols);
+    var currCol = (currCellLoc - (cols * currRow));
+    if (currRow === randRow && currCol === lastCol) {
+      console.log("same level: different maze");
+      if (level === 4 && counter % 3 === 0) {
+        //play "you win" sound
+        playAgainButton();
+        return;
+      }
+      profIdx++;
+      profIdx = (profIdx > 11) ? 0 : profIdx;
+      nextLevel();
+    }
+    console.log("entered maze cleared function");
+    return;
   }
 
   // Specify an rgb value ranging from 0-255 for each
@@ -206,7 +375,16 @@ function Cell(i, j) {
     var y = this.j * w;
     noStroke();
     fill(r, g, b);
-    (erase) ? rect(x + (w / 6), y + (w / 6), w / 1.5, w / 1.5) : rect(x + (w / 4), y + (w / 4), w / 2, w / 2);
+    (erase) ? rect(x + (w / 6), y + (w / 6), w / 1.5, w / 1.5) : image(imgs[profIdx], x + (w / 4), y + (w / 4), w / 2, w / 2);
+  }
+
+  // Draw a bit extra after erasing
+  this.fillAfterErase = function (r, g, b) {
+    var x = this.i * w;
+    var y = this.j * w;
+    noStroke();
+    fill(r, g, b);
+    rect(x + (w / 8), y + (w / 8), 3 * w / 4, 3 * w / 4);
   }
 }
 
@@ -228,5 +406,188 @@ function removeWalls(a, b) {
   } else if (y === -1) {
     a.walls[2] = false;
     b.walls[0] = false;
+  }
+}
+
+// Gets random border tile to use as endSquare (min, max inclusive)
+function randomNumber(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function moveUp() {
+  let next = undefined;
+  console.log("up");
+  if (!current.walls[0]) {
+    currCellLoc -= cols;
+    next = grid[currCellLoc];
+  }
+
+  if (next !== undefined) {
+
+    erase();
+    current.highlightPlayer(0, 0, 0, true);
+    noErase();
+    current.highlightPlayer(75, 156, 211, true);
+
+    // Highlight the valid next position given by the user
+    current = next;
+    current.highlightPlayer(0, 255, 0, false);
+  }
+}
+
+function moveDown() {
+  let next = undefined;
+  console.log("down");
+  if (!current.walls[2]) {
+    currCellLoc += cols;
+    next = grid[currCellLoc];
+  }
+
+  if (next !== undefined) {
+
+    erase();
+    current.highlightPlayer(0, 0, 0, true);
+    noErase();
+    current.highlightPlayer(75, 156, 211, true);
+
+    // Highlight the valid next position given by the user
+    current = next;
+    current.highlightPlayer(0, 255, 0, false);
+  }
+}
+
+function moveLeft() {
+  let next = undefined;
+  console.log("left");
+  if (!current.walls[3]) {
+    currCellLoc -= 1;
+    next = grid[currCellLoc];
+  }
+
+  if (next !== undefined) {
+
+    erase();
+    current.highlightPlayer(0, 0, 0, true);
+    noErase();
+    current.highlightPlayer(75, 156, 211, true);
+
+    // Highlight the valid next position given by the user
+    current = next;
+    current.highlightPlayer(0, 255, 0, false);
+  }
+}
+
+function moveRight() {
+  let next = undefined;
+  console.log("right");
+  if (!current.walls[1]) {
+    currCellLoc += 1;
+    next = grid[currCellLoc];
+  }
+
+  if (next !== undefined) {
+
+    erase();
+    current.highlightPlayer(0, 0, 0, true);
+    noErase();
+    current.highlightPlayer(75, 156, 211, true);
+
+    // Highlight the valid next position given by the user
+    current = next;
+    current.highlightPlayer(0, 255, 0, false);
+  }
+}
+
+// Global vars for audio
+var track, audioContext, successSound, panner, originalPos;
+function createSound() {
+  // establish audio context
+  const AudioContext = window.AudioContext || window.webkitAudioContext;
+  audioContext = new AudioContext;
+  // get audio element
+  successSound = document.querySelector('#success')
+  failSound = document.querySelector("#fail")
+
+
+
+  // pass track into audio context
+  track = audioContext.createMediaElementSource(failSound)
+  // connect track to context
+  // track.connect(audioContext.destination);
+
+  // listener for the specific context
+  let listener = audioContext.listener;
+
+
+  // set in the center of the screen
+  const posX = window.innerWidth / 2;
+  const posY = window.innerHeight / 2;
+  const posZ = 300;
+  originalPos = { x: posX, y: posY, z: posZ - 5 };
+
+  // TODO: maybe find a way to attach it somehow?
+  listener.forwardX.value = 0;
+  listener.forwardY.value = 0;
+  listener.upZ.value = 0;
+
+  // situate the listener object
+  listener.positionX.value = originalPos.x;
+  listener.positionY.value = originalPos.y;
+  listener.positionZ.value = originalPos.z;
+
+
+  const pannerModel = 'HRTF';
+  const innerCone = 60;
+  const outerCone = 90;
+  const outerGain = 0.3;
+  const distanceModel = 'linear';
+  const maxDistance = 10000;
+  const refDistance = 1;
+  const rollOff = 10;
+  const positionX = posX;
+  const positionY = posY;
+  const positionZ = posZ;
+  const orientationX = 0.0;
+  const orientationY = 0.0;
+  const orientationZ = -1.0;
+
+
+  panner = new PannerNode(audioContext, {
+    panningModel: pannerModel,
+    distanceModel: distanceModel,
+    positionX: positionX,
+    positionY: positionY,
+    positionZ: positionZ,
+    orientationX: orientationX,
+    orientationY: orientationY,
+    orientationZ: orientationZ,
+    refDistance: refDistance,
+    maxDistance: maxDistance,
+    rolloffFactor: rollOff,
+    coneInnerAngle: innerCone,
+    coneOuterAngle: outerCone,
+    coneOuterGain: outerGain
+  })
+  // const pannerOptions = { pan: 0 };
+  // const panner = new StereoPannerNode(audioContext, pannerOptions);  
+}
+
+document.documentElement.addEventListener(
+  "mousedown", function () {
+    if (window.Tone) {
+      if (window.Tone.context.state !== 'running') {
+        Tone.context.resume();
+      }
+    }
+  })
+
+document.body.onkeyup = function (e) {
+  if (e.keyCode == 32) {
+    play = true;
+    document.getElementById("intro").style.display = 'none';
+    createSound();
+    createNewMaze();
   }
 }
