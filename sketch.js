@@ -68,12 +68,11 @@ function playAgainButton() {
   return;
 }
 
-
 function nextLevel() {
   if (counter % 3 === 0 && counter != 0) {
     w /= 2;
     level++;
-    console.log("next level");
+    console.log("Level: "+level);
     counter = 1;
   } else {
     counter++;
