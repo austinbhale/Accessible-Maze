@@ -94,11 +94,12 @@ function previousLevel() {
 }
 
 function playAgain() {
+  var playAgainButton = document.getElementById("play-again")
   w = w * (Math.pow(2, level - 1));
   level = 1;
   counter = 1;
   createNewMaze();
-  this.hide();
+  playAgainButton.style.display = "none";
   return;
 }
 
@@ -113,6 +114,8 @@ function playAgain() {
 // Current cell goes back to the top left starting position.
 function createNewMaze() {
   if (document.activeElement != document.body) document.activeElement.blur();
+  var playAgainButton = document.getElementById("play-again")
+  playAgainButton.style.display="none";
   clear();
   grid = [];
   stack = [];
@@ -302,7 +305,8 @@ function Cell(i, j) {
       nextLevelSound.play();
       if (level === 4 && counter % 3 === 0) {
         //play "you win" sound
-        //playAgainButton();
+        var playAgainButton = document.getElementById("play-again")
+        playAgainButton.style.display = "block";
         return;
       }
       profIdx++;
