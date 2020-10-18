@@ -7,6 +7,7 @@ var current; // the player's current cell
 var currCellLoc = 0;
 var randRow = 0;
 var lastCol = 0;
+var level = 1;
 
 // Setup(): line pixel weight. Even numbers only
 var lineWeight = 6;
@@ -15,12 +16,12 @@ function setup() {
   createCanvas(1000, 1000);
   // frameRate(30);
   createNewMaze();
-  button();
+  newMazeButton();
+  previousLevelButton();
 }
 
-function button() {
-    var button = createButton("Next Maze");
-    button.show();
+function newMazeButton() {
+    var button = createButton("New Maze");
     button.mousePressed(createNewMaze);
     button.position(width-100, height-50);
     button.size(100, 50);
@@ -28,9 +29,19 @@ function button() {
     return;
 }
 
+function previousLevelButton() {
+  var button = createButton("Previous Level");
+  button.mousePressed(previousLevel);
+  button.position(width-210, height-50);
+  button.size(100, 50);
+  button.style('font-size : 20px; background-color: #555555; color:white');
+  return;
+}
+
 function nextLevel() {
     if (counter % 3 === 0 &&  counter != 0) {
       w /= 2;
+      level++;
       console.log("next level");
       counter = 0;
     } else {
@@ -38,6 +49,15 @@ function nextLevel() {
     }
     createNewMaze();
     return;
+}
+
+function previousLevel() {
+  if (level > 1) {
+    w *= 2;
+    level -= 1;
+  } 
+  createNewMaze();
+  return;
 }
 
 // draw() loops forever until stopped. Set fps with frameRate(30)
@@ -134,13 +154,9 @@ function keyPressed() {
     console.log("enter");
     createNewMaze();
     return;
-  } else if(keyCode == SHIFT) {
-    console.log("shift: next level?");
-    if (counter % 3 === 0) {
-      nextLevel();
-    } else {
-      createNewMaze();
-    }
+  } else if(keyCode == SHIFT) { //previous level 
+    console.log("shift: previous level");
+    previousLevel();
   }
 
   if (next !== undefined) {
