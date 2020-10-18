@@ -171,6 +171,7 @@ function keyPressed() {
   if (!play) return;
   track.connect(panner).connect(audioContext.destination);
 
+
   let next = undefined;
   // Reset panner position back to the center
   panner.positionX.value = originalPos.x;
@@ -178,6 +179,7 @@ function keyPressed() {
   panner.positionZ.value = originalPos.z;
 
   if (keyCode == UP_ARROW) {
+    
     next = moveUp();
   } else if (keyCode == RIGHT_ARROW) {
     next = moveRight();
@@ -559,7 +561,29 @@ document.body.onkeyup = function (e) {
     createCanvas(800, 800);
     document.getElementById("intro").style.display = 'none';
     document.getElementById("buttons").style.display = 'block';
+    document.getElementById("startGameBtn").style.display = 'none';
+
+    nextLevelSound = document.querySelector('#nextlevel')
+    nextLevelSound.play();
+    
     createSound();
     createNewMaze();
   }
+}
+
+function loadGame () {
+    play = true;
+    createCanvas(800, 800);
+    document.getElementById("intro").style.display = 'none';
+    document.getElementById("startGameBtn").style.display = 'none';
+    document.getElementById("buttons").style.display = 'block';
+
+    nextLevelSound = document.querySelector('#nextlevel')
+    nextLevelSound.play();
+
+    
+    createSound();
+    createNewMaze();
+
+
 }
