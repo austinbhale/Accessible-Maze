@@ -30,7 +30,7 @@ function preload() {
   imgs.push(loadImage('imgs/profs/stotts.jpeg'));
   imgs.push(loadImage('imgs/profs/tessa.jpg'));
   imgs.push(loadImage('imgs/profs/plaisted.jpeg'));
-  imgSit = loadImage('imgs/sitterson.jpg');
+  imgSit = loadImage('imgs/sittersonhome.jpg');
 }
 
 function setup() {
@@ -613,7 +613,7 @@ document.documentElement.addEventListener(
 
 document.body.onkeyup = function (e) {
   if (e.keyCode == 32) {
-    if (!play) {
+    if (!play && loaded) {
 
       let cnv = createCanvas(800, 800);
       cnv.position(50, 100);
@@ -632,7 +632,7 @@ document.body.onkeyup = function (e) {
 }
 
 function loadGame() {
-  if (!play) {
+  if (!play && loaded) {
     let cnv = createCanvas(800, 800);
     cnv.position(50, 100);
     document.getElementById("intro").style.display = 'none';
@@ -649,3 +649,8 @@ function loadGame() {
     play = true;
   }
 }
+
+var loaded = false;
+window.addEventListener('load', function () {
+  loaded = true;
+})
