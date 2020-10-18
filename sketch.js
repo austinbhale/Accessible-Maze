@@ -351,6 +351,12 @@ function randomNumber(min, max) {
 }
 
 function moveUp() {
+  if (!play) return;
+  track.connect(panner).connect(audioContext.destination);
+  // Reset panner position back to the center
+  panner.positionX.value = originalPos.x;
+  panner.positionY.value = originalPos.y;
+  panner.positionZ.value = originalPos.z;
   console.log("up");
   let next = undefined;
   if (!current.walls[0]) {
@@ -369,6 +375,13 @@ function moveUp() {
 }
 
 function moveDown() {
+  if (!play) return;
+  track.connect(panner).connect(audioContext.destination);
+
+  // Reset panner position back to the center
+  panner.positionX.value = originalPos.x;
+  panner.positionY.value = originalPos.y;
+  panner.positionZ.value = originalPos.z;
   let next = undefined;
   console.log("down");
   // audioContext.close()
@@ -390,6 +403,12 @@ function moveDown() {
 }
 
 function moveLeft() {
+  if (!play) return;
+  track.connect(panner).connect(audioContext.destination);
+  // Reset panner position back to the center
+  panner.positionX.value = originalPos.x;
+  panner.positionY.value = originalPos.y;
+  panner.positionZ.value = originalPos.z;
   let next = undefined;
   console.log("left");
   if (!current.walls[3]) {
@@ -408,6 +427,13 @@ function moveLeft() {
 }
 
 function moveRight() {
+  if (!play) return;
+  track.connect(panner).connect(audioContext.destination);
+
+  // Reset panner position back to the center
+  panner.positionX.value = originalPos.x;
+  panner.positionY.value = originalPos.y;
+  panner.positionZ.value = originalPos.z;
   console.log("right");
   let next = undefined;
   if (!current.walls[1]) {

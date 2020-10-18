@@ -91,6 +91,7 @@ function playAgain() {
 
 // Current cell goes back to the top left starting position.
 function createNewMaze() {
+  if (document.activeElement != document.body) document.activeElement.blur();
   clear();
   grid = [];
   stack = [];
