@@ -207,18 +207,17 @@ function keyPressed() {
     panner.positionZ.value = originalPos.z;
 
     // Find the walls and play the sound
-    if (current.walls[0]) {
-      //up
-      panner.positionZ.value += 300;
-    } else if (current.walls[1]) {
-      //right
-      panner.positionX.value += 100;
-    } else if (current.walls[2]) {
-      //down
-      panner.positionY.value -= 500;
-    } else if (current.walls[3]) {
-      //left
-      panner.positionY.value -= 500;
+    if (current.walls[0]) { //top
+      panner.positionY.value += 300;
+    } 
+    if (current.walls[1]) { //right
+      panner.positionX.value += 300;
+    } 
+    if (current.walls[2]) { //bottom
+      panner.positionY.value -= 300;
+    } 
+    if (current.walls[3]) { //left
+      panner.positionX.value -= 300;
     }
     audioElement.play();
   }
