@@ -80,6 +80,7 @@ function nextLevel() {
   }
   console.log("Counter = " + counter);
   createNewMaze();
+  document.getElementById("level").innerHTML=`Level: ${level}`;
   return;
 }
 
@@ -679,4 +680,8 @@ window.addEventListener('load', function () {
     loaded = true;
   }
 })
+
+window.onload = function() {
+  document.getElementById("level").innerHTML=`Level: ${level}`;
+ }
 
