@@ -5,15 +5,16 @@ var stack = [];
 var current; // the player's current cell
 var currCellLoc = 0;
 
+var play = false;
+
 
 // Setup(): line pixel weight. Even numbers only
 var lineWeight = 6;
 
 function setup() {
-  createSound();
   createCanvas(900, 900);
   // frameRate(30);
-  createNewMaze();
+  //createNewMaze();
 }
 
 // draw() loops forever until stopped. Set fps with frameRate(30)
@@ -150,6 +151,7 @@ function createSound() {
 }
 // More key presses for p5js can be found at https://p5js.org/reference/#/p5/keyPressed
 function keyPressed() {
+  if (!play) return;
   track.connect(panner).connect(audioContext.destination);
 
   var next = undefined;
@@ -346,3 +348,11 @@ document.documentElement.addEventListener(
       }
     }
   })
+
+document.body.onkeyup = function (e) {
+  if (e.keyCode == 32) {
+    play = true;
+    createSound();
+    createNewMaze();
+  }
+}
