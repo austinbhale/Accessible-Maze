@@ -171,20 +171,19 @@ function keyPressed() {
   if (!play) return;
   track.connect(panner).connect(audioContext.destination);
 
-  let next = undefined;
   // Reset panner position back to the center
   panner.positionX.value = originalPos.x;
   panner.positionY.value = originalPos.y;
   panner.positionZ.value = originalPos.z;
 
   if (keyCode == UP_ARROW) {
-    next = moveUp();
+    moveUp();
   } else if (keyCode == RIGHT_ARROW) {
-    next = moveRight();
+    moveRight();
   } else if (keyCode == DOWN_ARROW) {
-    next = moveDown();
+    moveDown();
   } else if (keyCode == LEFT_ARROW) {
-    next = moveLeft();
+    moveLeft();
   } else if (keyCode == ENTER) {
     console.log("enter");
     createNewMaze();
@@ -321,10 +320,16 @@ function Cell(i, j) {
   }
 }
 
+function getCurrRow() {
+  return floor(currCellLoc / cols);
+}
+
+function getCurrCol() {
+  return (currCellLoc - (cols * getCurrRow()));
+}
+
 function isFinalRowCol() {
-  var currRow = floor(currCellLoc / cols);
-  var currCol = (currCellLoc - (cols * currRow));
-  return (currRow === randRow && currCol === lastCol);
+  return (getCurrRow() === randRow && getCurrCol() === lastCol);
 }
 
 // Setup()
@@ -370,6 +375,8 @@ function moveUp() {
     next = grid[currCellLoc];
     (isFinalRowCol()) ? nextLevelSound.play() : successSound.play();
     document.getElementById("upArrow").focus();
+
+    
   } else {
     console.log("hit a wall...")
     panner.positionY.value += 5000;
@@ -456,23 +463,36 @@ function moveRight() {
 }
 
 function movePlayer(next) {
-    // place a new cell   
-    if (next !== undefined) {
-      // Erase so we're not drawing on top of a color
-      erase();
-      current.highlightPlayer(0, 0, 0, true);
-      noErase();
-      current.fillAfterErase(75, 156, 211);
-  
-      // Highlight the valid next position given by the user
-      current = next;
-      current.highlightPlayer(0, 255, 0, false);
-      current.mazeCleared();
-    }
+  // place a new cell   
+  if (next !== undefined) {
+    // Erase so we're not drawing on top of a color
+    erase();
+    current.highlightPlayer(0, 0, 0, true);
+    noErase();
+    current.fillAfterErase(75, 156, 211);
+
+    // Highlight the valid next position given by the user
+    current = next;
+    current.highlightPlayer(0, 255, 0, false);
+    current.mazeCleared();
+
+    adjustPlaistedSound();
+  }
+}
+
+function adjustPlaistedSound() {
+  let rowDiff = abs(randRow - getCurrRow());
+  let colDiff = abs(lastCol - getCurrCol());
+  let amplifyZ = rowDiff + colDiff;
+  let multiplier = amplifyZ / (rows + cols);
+  multiplier -= 1 / (rows + cols);
+  console.log('plaisted volume: ' + (1 - multiplier) * 0.25);
+  document.getElementById("ambient").volume = (1 - multiplier) * 0.25;
 }
 
 // Global vars for audio
 var track, audioContext, successSound, nextLevelSound, panner, originalPos;
+var ambientSound, pannerAmbient, ambientCurrPos, ambientOriginalPos;
 function createSound() {
   // establish audio context
   const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -481,9 +501,11 @@ function createSound() {
   successSound = document.querySelector('#success')
   failSound = document.querySelector("#fail")
   nextLevelSound = document.querySelector('#nextlevel')
+  ambientSound = document.querySelector('#ambient')
 
   // pass track into audio context
-  track = audioContext.createMediaElementSource(failSound)
+  track = audioContext.createMediaElementSource(failSound);
+  trackAmbient = audioContext.createMediaElementSource(ambientSound);
   // connect track to context
   // track.connect(audioContext.destination);
 
@@ -540,8 +562,37 @@ function createSound() {
     coneOuterAngle: outerCone,
     coneOuterGain: outerGain
   })
+
+  const ambientInnerCone = 30;
+  const ambientOuterCone = 45;
+  const ambientOuterGain = 0.15;
+
+  pannerAmbient = new PannerNode(audioContext, {
+    panningModel: pannerModel,
+    distanceModel: distanceModel,
+    positionX: positionX,
+    positionY: positionY,
+    positionZ: positionZ,
+    orientationX: orientationX,
+    orientationY: orientationY,
+    orientationZ: orientationZ,
+    refDistance: refDistance,
+    maxDistance: maxDistance,
+    rolloffFactor: rollOff,
+    coneInnerAngle: ambientInnerCone,
+    coneOuterAngle: ambientOuterCone,
+    coneOuterGain: ambientOuterGain
+  })
+
+  // pannerAmbient.positionZ.value += 9000;
+  adjustPlaistedSound();
+
+  ambientCurrPos = { x: posX, y: posY, z: posZ - 5 + 9000 };
+  ambientOriginalPos = ambientCurrPos;
   // const pannerOptions = { pan: 0 };
-  // const panner = new StereoPannerNode(audioContext, pannerOptions);  
+  // const panner = new StereoPannerNode(audioContext, pannerOptions); 
+  trackAmbient.connect(pannerAmbient).connect(audioContext.destination);
+  ambientSound.play(); 
 }
 
 document.documentElement.addEventListener(
@@ -555,11 +606,13 @@ document.documentElement.addEventListener(
 
 document.body.onkeyup = function (e) {
   if (e.keyCode == 32) {
-    play = true;
-    createCanvas(800, 800);
-    document.getElementById("intro").style.display = 'none';
-    document.getElementById("buttons").style.display = 'block';
-    createSound();
-    createNewMaze();
+    if (!play) {
+      play = true;
+      createCanvas(800, 800);
+      document.getElementById("intro").style.display = 'none';
+      document.getElementById("buttons").style.display = 'block';
+      createNewMaze();  
+      createSound();  
+    }
   }
 }
