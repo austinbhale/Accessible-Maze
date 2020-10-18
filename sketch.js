@@ -115,7 +115,7 @@ function playAgain() {
 function createNewMaze() {
   if (document.activeElement != document.body) document.activeElement.blur();
   var playAgainButton = document.getElementById("play-again")
-  playAgainButton.style.display="block";
+  playAgainButton.style.display="none";
   clear();
   grid = [];
   stack = [];
