@@ -77,6 +77,7 @@ function playAgain() {
   level = 1;
   counter = 1;
   createNewMaze();
+  this.hide();
   return;
 }
 
