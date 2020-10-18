@@ -652,5 +652,16 @@ function loadGame() {
 
 var loaded = false;
 window.addEventListener('load', function () {
-  loaded = true;
+  // set interval
+  var tid = setInterval(mycode, 100);
+  function mycode() {
+    var element = document.getElementById("defaultCanvas0");
+    if (element) abortTimer(tid);
+    console.log('hello');
+  }
+  function abortTimer() {
+    clearInterval(tid);
+    loaded = true;
+  }
 })
+
