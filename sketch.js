@@ -618,6 +618,7 @@ function createSound() {
   // const panner = new StereoPannerNode(audioContext, pannerOptions); 
   trackAmbient.connect(pannerAmbient).connect(audioContext.destination);
   ambientSound.play();
+  document.getElementById("ambient").loop = true;
 }
 
 document.documentElement.addEventListener(
