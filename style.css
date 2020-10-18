@@ -12,7 +12,7 @@ audio {
   font-family: 'Courier New', Courier, monospace;
   text-shadow: 3px 3px 2px #a360a2;
   text-align: center;
-  color: rgb(34, 40, 78);
+  color: black;
   padding-top: 20px;
   padding-bottom: 20px;
 }
@@ -20,7 +20,7 @@ audio {
 .intro {
   font-family: Verdana;
   font-size: large;
-  color: rgb(34, 40, 78);
+  color: black;
   text-align: center;
   padding-left: 200px;
   padding-right: 200px;
