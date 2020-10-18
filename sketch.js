@@ -171,6 +171,7 @@ function keyPressed() {
   if (!play) return;
   track.connect(panner).connect(audioContext.destination);
 
+
   // Reset panner position back to the center
   panner.positionX.value = originalPos.x;
   panner.positionY.value = originalPos.y;
@@ -376,7 +377,7 @@ function moveUp() {
     (isFinalRowCol()) ? nextLevelSound.play() : successSound.play();
     document.getElementById("upArrow").focus();
 
-    
+
   } else {
     console.log("hit a wall...")
     panner.positionY.value += 5000;
@@ -592,7 +593,7 @@ function createSound() {
   // const pannerOptions = { pan: 0 };
   // const panner = new StereoPannerNode(audioContext, pannerOptions); 
   trackAmbient.connect(pannerAmbient).connect(audioContext.destination);
-  ambientSound.play(); 
+  ambientSound.play();
 }
 
 document.documentElement.addEventListener(
@@ -611,8 +612,30 @@ document.body.onkeyup = function (e) {
       createCanvas(800, 800);
       document.getElementById("intro").style.display = 'none';
       document.getElementById("buttons").style.display = 'block';
-      createNewMaze();  
-      createSound();  
+      document.getElementById("startGameBtn").style.display = 'none';
+
+      nextLevelSound = document.querySelector('#nextlevel')
+      nextLevelSound.play();
+
+      createSound();
+      createNewMaze();
     }
   }
+}
+
+function loadGame() {
+  play = true;
+  createCanvas(800, 800);
+  document.getElementById("intro").style.display = 'none';
+  document.getElementById("startGameBtn").style.display = 'none';
+  document.getElementById("buttons").style.display = 'block';
+
+  nextLevelSound = document.querySelector('#nextlevel')
+  nextLevelSound.play();
+
+
+  createSound();
+  createNewMaze();
+
+
 }
