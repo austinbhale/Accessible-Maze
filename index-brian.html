@@ -20,28 +20,56 @@
     </div>
     <div class="column2">
       <div class="buttons">
-        <button id="upArrow" style="margin: 0 auto" onclick="moveUp()">
-          &uarr;
-        </button>
-        <div style="margin-left: 27%">
-          <button id="leftArrow" class="horizontal-button" onclick="moveLeft()">
-            &larr;
-          </button>
-          <button
-            id="rightArrow"
-            class="horizontal-button"
-            onclick="moveRight()"
-          >
-            &rarr;
-          </button>
+        <div class="grid-container">
+            <div class="grid-item"></div>
+
+            <div class="grid-item">
+              <button id="upArrow" onclick="moveUp()">
+                &uarr;
+              </button>
+            </div>
+
+            <div class="grid-item"></div>
+
+            <div class="grid-item">
+              <button id="leftArrow" class="horizontal-button" onclick="moveLeft()">
+                  &larr;
+              </button>
+            </div>
+
+            <div class="grid-item"></div>
+
+            <div>
+                <button
+                  id="rightArrow"
+                  class="horizontal-button"
+                  onclick="moveRight()"
+                >
+                  &rarr;
+                </button>
+            </div>
+
+            <div class="grid-item"></div>
+
+            <div class="grid-item">
+              <button id="downArrow" onclick="moveDown()">
+                &darr;
+              </button>
+            </div>
+
+            <div class="grid-item"></div>    
         </div>
-        <button id="downArrow" style="margin: 0 auto" onclick="moveDown()">
-          &darr;
-        </button>
-        <span>
-          <button onclick="previousLevel()">Previous Level</button>
-          <button onclick="createNewMaze()">New Maze</button>
-        </span>
+
+        <div id="other-grid-container">
+          <div class="grid-item-left">
+              <button onclick="previousLevel()">Previous Level</button>
+          </div>
+
+          <div class="grid-item-right">
+              <button onclick="createNewMaze()">New Maze</button>
+          </div>
+        </div>
+
       </div>
     </div>
   </body>

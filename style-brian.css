@@ -3,11 +3,11 @@ html {
   padding: 0;
   background-color: white;
 }
+
 h1 {
   text-align: center;
   text-shadow: 1px 1px #000;
 }
-
 .column1 {
   float: left;
   width: 80%;
@@ -16,26 +16,47 @@ h1 {
 .column2 {
   float: right;
   width: 20%;
-  margin-top: 10%;
-  left: 80%;
+  margin-top: 5%;
+  left: 60%;
   position: fixed;
 }
 
 button {
-  background-color: steelblue; /* Green */
-  border: none;
+  background-color: rgb(75, 156, 211); /* Green */
+  border: 4px solid black;
   color: white;
-  padding: 20px;
   text-align: center;
   text-decoration: none;
-  font-size: 16px;
-  margin: 4px 2px;
+  font-size: 30px;
   cursor: pointer;
-  border-radius: 50%;
   display: block;
+  width: 200px;
+  height: 100px;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  grid-row-gap: 50px;
 }
 
 .horizontal-button {
   display: inline-block;
   margin: 0 auto;
+}
+
+#other-grid-container {
+  display: grid;
+  padding-top: 50px;
+  grid-template-columns: auto auto auto;
+  grid-row-gap: 50px;
+}
+
+.grid-item-left {
+  padding-left: 50px;
+  padding-right: 50px;
+}
+
+.grid-item-right {
+  padding-left: 50px;
 }
