@@ -4,6 +4,10 @@ var grid = [];
 var stack = [];
 var current; // the player's current cell
 var currCellLoc = 0;
+var imgSit = null;
+function preload() {
+  imgSit = loadImage('imgs/sitterson.jpg');
+}
 
 // Setup(): line pixel weight. Even numbers only
 var lineWeight = 6;
@@ -256,8 +260,8 @@ function setup() {
   createCanvas(800, 800);
   // frameRate(30);
   createNewMaze();
-  newMazeButton();
-  previousLevelButton();
+  // newMazeButton();
+  // previousLevelButton();
 }
 
 function newMazeButton() {
@@ -516,7 +520,7 @@ function Cell(i, j) {
       lastCol = (Math.sqrt(grid.length)) - 1;
       noStroke();
       fill(51, 153, 51); // dark green background
-      rect(lastCol*w, randRow*w, w-5, w-5);
+      image(imgSit, lastCol*w + (lineWeight/2), randRow*w + (lineWeight/2), w, w);
     }
   }
 
