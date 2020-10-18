@@ -295,10 +295,9 @@ function Cell(i, j) {
   //checks if current maze has been completed and goes to the next maze/level
   // depending on the counter's value 
   this.mazeCleared = function () {
-    var currRow = floor(currCellLoc / cols);
-    var currCol = (currCellLoc - (cols * currRow));
-    if (currRow === randRow && currCol === lastCol) {
+    if (isFinalRowCol()) {
       console.log("same level: different maze");
+      nextLevelSound.play();
       if (level === 4 && counter % 3 === 0) {
         //play "you win" sound
         playAgainButton();
@@ -320,6 +319,12 @@ function Cell(i, j) {
     fill(r, g, b);
     (erase) ? rect(x + (w / 6), y + (w / 6), w / 1.5, w / 1.5) : image(imgs[profIdx], x + (w / 4), y + (w / 4), w / 2, w / 2);
   }
+}
+
+function isFinalRowCol() {
+  var currRow = floor(currCellLoc / cols);
+  var currCol = (currCellLoc - (cols * currRow));
+  return (currRow === randRow && currCol === lastCol);
 }
 
 // Setup()
@@ -363,7 +368,7 @@ function moveUp() {
     console.log("SUCCESS!")
     currCellLoc -= cols;
     next = grid[currCellLoc];
-    successSound.play();
+    (isFinalRowCol()) ? nextLevelSound.play() : successSound.play();
     document.getElementById("upArrow").focus();
   } else {
     console.log("hit a wall...")
@@ -391,7 +396,7 @@ function moveDown() {
     console.log("SUCCESS!")
     currCellLoc += cols;
     next = grid[currCellLoc];
-    successSound.play();
+    (isFinalRowCol()) ? nextLevelSound.play() : successSound.play();
     document.getElementById("downArrow").focus();
   } else {
     console.log("hit a wall...")
@@ -415,7 +420,7 @@ function moveLeft() {
     console.log("SUCCESS!")
     currCellLoc -= 1;
     next = grid[currCellLoc];
-    successSound.play();
+    (isFinalRowCol()) ? nextLevelSound.play() : successSound.play();
     document.getElementById("leftArrow").focus();
   } else {
     console.log("hit a wall...")
@@ -440,7 +445,7 @@ function moveRight() {
     console.log("SUCCESS!")
     currCellLoc += 1;
     next = grid[currCellLoc];
-    successSound.play();
+    (isFinalRowCol()) ? nextLevelSound.play() : successSound.play();
     document.getElementById("rightArrow").focus();
   } else {
     console.log("hit a wall...")
@@ -467,7 +472,7 @@ function movePlayer(next) {
 }
 
 // Global vars for audio
-var track, audioContext, successSound, panner, originalPos;
+var track, audioContext, successSound, nextLevelSound, panner, originalPos;
 function createSound() {
   // establish audio context
   const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -475,8 +480,7 @@ function createSound() {
   // get audio element
   successSound = document.querySelector('#success')
   failSound = document.querySelector("#fail")
-
-
+  nextLevelSound = document.querySelector('#nextlevel')
 
   // pass track into audio context
   track = audioContext.createMediaElementSource(failSound)
