@@ -1,4 +1,4 @@
-# Accessible-Maze
+# findSitterson(UNC-CS-professors);
 ## Inspiration
 With a new virtual school, the Enabling Technology Club has been unable to prepare for UNC's annual Maze Day event. This event invites students with visual impairments to play fun games, so we wanted to create one online! Our game utilizes spatial audio to guide the visually impaired through the maze. It can also be used for students with other disabilities thanks to the option of using touch-screen arrows/buttons and keypresses.
 ## What it does
