@@ -164,6 +164,8 @@ function createNewMaze() {
   line(0, height, width, height);
   line(width, height, width, 0);
   line(width, 0, 0, 0);
+
+  adjustPlaistedSound();
 }
 
 // More key presses for p5js can be found at https://p5js.org/reference/#/p5/keyPressed
@@ -485,10 +487,14 @@ function adjustPlaistedSound() {
   let rowDiff = abs(randRow - getCurrRow());
   let colDiff = abs(lastCol - getCurrCol());
   let amplifyZ = rowDiff + colDiff;
-  let multiplier = amplifyZ / (rows + cols);
-  multiplier -= 1 / (rows + cols);
-  console.log('plaisted volume: ' + (1 - multiplier) * 0.25);
-  document.getElementById("ambient").volume = (1 - multiplier) * 0.25;
+  let div = (rows + cols - 2);
+  div = (div <= 0) ? 0.0001 : div; // make sure we don't divide by zero but not necessary
+  let multiplier = amplifyZ / div;
+  multiplier -= 0.5 / div;
+  multiplier = (1 - multiplier) * 0.25;
+  multiplier = (multiplier <= 0) ? 0.0001 : multiplier; // again, probably not necessary but safe
+  console.log('plaisted volume: ' + multiplier);
+  document.getElementById("ambient").volume = multiplier;
 }
 
 // Global vars for audio
@@ -609,7 +615,8 @@ document.body.onkeyup = function (e) {
   if (e.keyCode == 32) {
     if (!play) {
       play = true;
-      createCanvas(800, 800);
+      let cnv = createCanvas(800, 800);
+      cnv.position(50, 100);
       document.getElementById("intro").style.display = 'none';
       document.getElementById("buttons").style.display = 'block';
       document.getElementById("startGameBtn").style.display = 'none';
@@ -617,15 +624,16 @@ document.body.onkeyup = function (e) {
       nextLevelSound = document.querySelector('#nextlevel')
       nextLevelSound.play();
 
-      createSound();
       createNewMaze();
+      createSound();
     }
   }
 }
 
 function loadGame() {
   play = true;
-  createCanvas(800, 800);
+  let cnv = createCanvas(800, 800);
+  cnv.position(50, 100);
   document.getElementById("intro").style.display = 'none';
   document.getElementById("startGameBtn").style.display = 'none';
   document.getElementById("buttons").style.display = 'block';
@@ -634,8 +642,8 @@ function loadGame() {
   nextLevelSound.play();
 
 
-  createSound();
-  createNewMaze();
 
+  createNewMaze();
+  createSound();
 
 }
