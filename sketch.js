@@ -302,7 +302,7 @@ function Cell(i, j) {
       nextLevelSound.play();
       if (level === 4 && counter % 3 === 0) {
         //play "you win" sound
-        playAgainButton();
+        //playAgainButton();
         return;
       }
       profIdx++;
@@ -641,8 +641,6 @@ function loadGame() {
 
     nextLevelSound = document.querySelector('#nextlevel')
     nextLevelSound.play();
-
-
 
     createNewMaze();
     createSound();
