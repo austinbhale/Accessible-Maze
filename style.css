@@ -44,6 +44,10 @@ h1 {
   position: fixed;
 }
 
+#buttons {
+  display: none;
+}
+
 button {
   background-color: rgb(75, 156, 211); /* Green */
   border: 4px solid black;

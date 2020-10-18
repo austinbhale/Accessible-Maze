@@ -34,7 +34,7 @@ function preload() {
 }
 
 function setup() {
-  createCanvas(800, 800);
+  // createCanvas(800, 800);
   // frameRate(30);
   // createNewMaze();
   // newMazeButton();
@@ -556,7 +556,9 @@ document.documentElement.addEventListener(
 document.body.onkeyup = function (e) {
   if (e.keyCode == 32) {
     play = true;
+    createCanvas(800, 800);
     document.getElementById("intro").style.display = 'none';
+    document.getElementById("buttons").style.display = 'block';
     createSound();
     createNewMaze();
   }
