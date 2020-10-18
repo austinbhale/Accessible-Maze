@@ -1,5 +1,5 @@
 var cols, rows;
-var w = 200; // width of each square
+var w = 400; // width of each square
 var counter = 1; //counter for number of times a level has been played
 var grid = [];
 var stack = [];
@@ -13,7 +13,7 @@ var level = 1;
 var lineWeight = 6;
 
 function setup() {
-  createCanvas(1000, 1000);
+  createCanvas(800, 800);
   // frameRate(30);
   createNewMaze();
   newMazeButton();
@@ -21,12 +21,12 @@ function setup() {
 }
 
 function newMazeButton() {
-    var button = createButton("New Maze");
-    button.mousePressed(createNewMaze);
-    button.position(width-100, height-50);
-    button.size(100, 50);
-    button.style('font-size : 20px; background-color: #555555; color:white');
-    return;
+  var button = createButton("New Maze");
+  button.mousePressed(createNewMaze);
+  button.position(width-100, height-50);
+  button.size(100, 50);
+  button.style('font-size : 20px; background-color: #555555; color:white');
+  return;
 }
 
 function previousLevelButton() {
@@ -38,24 +38,44 @@ function previousLevelButton() {
   return;
 }
 
+function playAgainButton() {
+  var button = createButton("Play Again");
+  button.position(width-320, height-50);
+  button.size(100, 50);
+  button.style('font-size : 20px; background-color: #555555; color:white');
+  button.mousePressed(playAgain);
+  return;
+}
+
+
 function nextLevel() {
-    if (counter % 3 === 0 &&  counter != 0) {
-      w /= 2;
-      level++;
-      console.log("next level");
-      counter = 0;
-    } else {
-      counter++;
-    }
-    createNewMaze();
-    return;
+  if (counter % 3 === 0 &&  counter != 0) {
+    w /= 2;
+    level++;
+    console.log("next level");
+    counter = 1;
+  } else {
+    counter++;
+  }
+  console.log("Counter = "+counter);
+  createNewMaze();
+  return;
 }
 
 function previousLevel() {
   if (level > 1) {
     w *= 2;
     level -= 1;
+    counter = 1;
   } 
+  createNewMaze();
+  return;
+}
+
+function playAgain() {
+  w = w * (Math.pow(2, level-1));
+  level = 1;
+  counter = 1;
   createNewMaze();
   return;
 }
@@ -266,6 +286,11 @@ function Cell(i, j) {
     var currCol = (currCellLoc - (cols * currRow));
     if (currRow === randRow &&  currCol === lastCol) {
       console.log("same level: different maze");
+      if (level === 4 && counter % 3 === 0) {
+        //play "you win" sound
+        playAgainButton();
+        return;
+      }
       nextLevel();
     }
     console.log("entered maze cleared function");
