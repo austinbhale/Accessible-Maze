@@ -614,7 +614,7 @@ document.documentElement.addEventListener(
 document.body.onkeyup = function (e) {
   if (e.keyCode == 32) {
     if (!play) {
-      play = true;
+
       let cnv = createCanvas(800, 800);
       cnv.position(50, 100);
       document.getElementById("intro").style.display = 'none';
@@ -626,24 +626,26 @@ document.body.onkeyup = function (e) {
 
       createNewMaze();
       createSound();
+      play = true;
     }
   }
 }
 
 function loadGame() {
-  play = true;
-  let cnv = createCanvas(800, 800);
-  cnv.position(50, 100);
-  document.getElementById("intro").style.display = 'none';
-  document.getElementById("startGameBtn").style.display = 'none';
-  document.getElementById("buttons").style.display = 'block';
+  if (!play) {
+    let cnv = createCanvas(800, 800);
+    cnv.position(50, 100);
+    document.getElementById("intro").style.display = 'none';
+    document.getElementById("startGameBtn").style.display = 'none';
+    document.getElementById("buttons").style.display = 'block';
 
-  nextLevelSound = document.querySelector('#nextlevel')
-  nextLevelSound.play();
+    nextLevelSound = document.querySelector('#nextlevel')
+    nextLevelSound.play();
 
 
 
-  createNewMaze();
-  createSound();
-
+    createNewMaze();
+    createSound();
+    play = true;
+  }
 }
