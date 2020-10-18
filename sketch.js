@@ -389,7 +389,10 @@ function moveUp() {
     panner.positionY.value += 5000;
     failSound.play()
   }
-
+  document.getElementById("upArrow").style.backgroundColor="green";
+    setTimeout(function(){
+      document.getElementById("upArrow").style.backgroundColor="#4B9CD3";
+    },200);
   movePlayer(next);
 }
 
@@ -417,7 +420,10 @@ function moveDown() {
     panner.positionY.value -= 5000;
     failSound.play()
   }
-
+  document.getElementById("downArrow").style.backgroundColor="green";
+    setTimeout(function(){
+      document.getElementById("downArrow").style.backgroundColor="#4B9CD3";
+    },200);
   movePlayer(next);
 }
 
@@ -441,7 +447,10 @@ function moveLeft() {
     panner.positionX.value -= 5000;
     failSound.play()
   }
-
+  document.getElementById("leftArrow").style.backgroundColor="green";
+    setTimeout(function(){
+      document.getElementById("leftArrow").style.backgroundColor="#4B9CD3";
+    },200);
   movePlayer(next);
 }
 
@@ -466,6 +475,10 @@ function moveRight() {
     panner.positionX.value += 5000;
     failSound.play()
   }
+  document.getElementById("rightArrow").style.backgroundColor="green";
+    setTimeout(function(){
+      document.getElementById("rightArrow").style.backgroundColor="#4B9CD3";
+    },200);
   movePlayer(next);
 }
 
