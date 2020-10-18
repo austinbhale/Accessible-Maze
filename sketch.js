@@ -40,7 +40,7 @@ function setup() {
   // newMazeButton();
   // previousLevelButton();
 }
-
+/*
 function newMazeButton() {
   var button = createButton("New Maze");
   button.mousePressed(createNewMaze);
@@ -67,6 +67,7 @@ function playAgainButton() {
   button.mousePressed(playAgain);
   return;
 }
+*/
 
 function nextLevel() {
   if (counter % 3 === 0 && counter != 0) {
@@ -114,7 +115,7 @@ function playAgain() {
 function createNewMaze() {
   if (document.activeElement != document.body) document.activeElement.blur();
   var playAgainButton = document.getElementById("play-again")
-  playAgainButton.style.display="none";
+  playAgainButton.style.display="block";
   clear();
   grid = [];
   stack = [];
