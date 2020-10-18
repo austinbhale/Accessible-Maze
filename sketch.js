@@ -112,6 +112,7 @@ function playAgain() {
 
 // Current cell goes back to the top left starting position.
 function createNewMaze() {
+  if (document.activeElement != document.body) document.activeElement.blur();
   clear();
   grid = [];
   stack = [];
@@ -177,57 +178,13 @@ function keyPressed() {
   panner.positionZ.value = originalPos.z;
 
   if (keyCode == UP_ARROW) {
-    console.log("up");
-    if (!current.walls[0]) {
-      console.log("SUCCESS!")
-      currCellLoc -= cols;
-      next = grid[currCellLoc];
-      successSound.play();
-      document.getElementById("upArrow").focus();
-    } else {
-      console.log("hit a wall...")
-      panner.positionY.value += 5000;
-      failSound.play()
-    }
+    next = moveUp();
   } else if (keyCode == RIGHT_ARROW) {
-    console.log("right");
-    if (!current.walls[1]) {
-      console.log("SUCCESS!")
-      currCellLoc += 1;
-      next = grid[currCellLoc];
-      successSound.play();
-      document.getElementById("rightArrow").focus();
-    } else {
-      console.log("hit a wall...")
-      panner.positionX.value += 5000;
-      failSound.play()
-    }
+    next = moveRight();
   } else if (keyCode == DOWN_ARROW) {
-    console.log("down");
-    if (!current.walls[2]) {
-      console.log("SUCCESS!")
-      currCellLoc += cols;
-      next = grid[currCellLoc];
-      successSound.play();
-      document.getElementById("downArrow").focus();
-    } else {
-      console.log("hit a wall...")
-      panner.positionY.value -= 5000;
-      failSound.play()
-    }
+    next = moveDown();
   } else if (keyCode == LEFT_ARROW) {
-    console.log("left");
-    if (!current.walls[3]) {
-      console.log("SUCCESS!")
-      currCellLoc -= 1;
-      next = grid[currCellLoc];
-      successSound.play();
-      document.getElementById("leftArrow").focus();
-    } else {
-      console.log("hit a wall...")
-      panner.positionX.value -= 5000;
-      failSound.play()
-    }
+    next = moveLeft();
   } else if (keyCode == ENTER) {
     console.log("enter");
     createNewMaze();
@@ -235,20 +192,6 @@ function keyPressed() {
   } else if (keyCode == SHIFT) { //previous level 
     console.log("shift: previous level");
     previousLevel();
-  }
-
-  // place a new cell   
-  if (next !== undefined) {
-    // Erase so we're not drawing on top of a color
-    erase();
-    current.highlightPlayer(0, 0, 0, true);
-    noErase();
-    current.fillAfterErase(75, 156, 211);
-
-    // Highlight the valid next position given by the user
-    current = next;
-    current.highlightPlayer(0, 255, 0, false);
-    current.mazeCleared();
   }
 
   // audioContext.close()
@@ -377,15 +320,6 @@ function Cell(i, j) {
     fill(r, g, b);
     (erase) ? rect(x + (w / 6), y + (w / 6), w / 1.5, w / 1.5) : image(imgs[profIdx], x + (w / 4), y + (w / 4), w / 2, w / 2);
   }
-
-  // Draw a bit extra after erasing
-  this.fillAfterErase = function (r, g, b) {
-    var x = this.i * w;
-    var y = this.j * w;
-    noStroke();
-    fill(r, g, b);
-    rect(x + (w / 8), y + (w / 8), 3 * w / 4, 3 * w / 4);
-  }
 }
 
 // Setup()
@@ -417,87 +351,93 @@ function randomNumber(min, max) {
 }
 
 function moveUp() {
-  let next = undefined;
   console.log("up");
+  let next = undefined;
   if (!current.walls[0]) {
+    console.log("SUCCESS!")
     currCellLoc -= cols;
     next = grid[currCellLoc];
+    successSound.play();
+    document.getElementById("upArrow").focus();
+  } else {
+    console.log("hit a wall...")
+    panner.positionY.value += 5000;
+    failSound.play()
   }
 
-  if (next !== undefined) {
-
-    erase();
-    current.highlightPlayer(0, 0, 0, true);
-    noErase();
-    current.highlightPlayer(75, 156, 211, true);
-
-    // Highlight the valid next position given by the user
-    current = next;
-    current.highlightPlayer(0, 255, 0, false);
-  }
+  movePlayer(next);
 }
 
 function moveDown() {
   let next = undefined;
   console.log("down");
+  // audioContext.close()
+
+  console.log("down");
   if (!current.walls[2]) {
+    console.log("SUCCESS!")
     currCellLoc += cols;
     next = grid[currCellLoc];
+    successSound.play();
+    document.getElementById("downArrow").focus();
+  } else {
+    console.log("hit a wall...")
+    panner.positionY.value -= 5000;
+    failSound.play()
   }
 
-  if (next !== undefined) {
-
-    erase();
-    current.highlightPlayer(0, 0, 0, true);
-    noErase();
-    current.highlightPlayer(75, 156, 211, true);
-
-    // Highlight the valid next position given by the user
-    current = next;
-    current.highlightPlayer(0, 255, 0, false);
-  }
+  movePlayer(next);
 }
 
 function moveLeft() {
   let next = undefined;
   console.log("left");
   if (!current.walls[3]) {
+    console.log("SUCCESS!")
     currCellLoc -= 1;
     next = grid[currCellLoc];
+    successSound.play();
+    document.getElementById("leftArrow").focus();
+  } else {
+    console.log("hit a wall...")
+    panner.positionX.value -= 5000;
+    failSound.play()
   }
 
-  if (next !== undefined) {
-
-    erase();
-    current.highlightPlayer(0, 0, 0, true);
-    noErase();
-    current.highlightPlayer(75, 156, 211, true);
-
-    // Highlight the valid next position given by the user
-    current = next;
-    current.highlightPlayer(0, 255, 0, false);
-  }
+  movePlayer(next);
 }
 
 function moveRight() {
-  let next = undefined;
   console.log("right");
+  let next = undefined;
   if (!current.walls[1]) {
+    console.log("SUCCESS!")
     currCellLoc += 1;
     next = grid[currCellLoc];
+    successSound.play();
+    document.getElementById("rightArrow").focus();
+  } else {
+    console.log("hit a wall...")
+    panner.positionX.value += 5000;
+    failSound.play()
   }
+  movePlayer(next);
+}
 
-  if (next !== undefined) {
-
-    erase();
-    current.highlightPlayer(0, 0, 0, true);
-    noErase();
-    current.highlightPlayer(75, 156, 211, true);
-
-    // Highlight the valid next position given by the user
-    current = next;
-    current.highlightPlayer(0, 255, 0, false);
-  }
+function movePlayer(next) {
+    // place a new cell   
+    if (next !== undefined) {
+      // Erase so we're not drawing on top of a color
+      erase();
+      current.highlightPlayer(0, 0, 0, true);
+      noErase();
+      current.fillAfterErase(75, 156, 211);
+  
+      // Highlight the valid next position given by the user
+      current = next;
+      current.highlightPlayer(0, 255, 0, false);
+      current.mazeCleared();
+    }
 }
 
 // Global vars for audio
