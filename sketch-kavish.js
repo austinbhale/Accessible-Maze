@@ -1,51 +1,84 @@
 var cols, rows;
-var w = 200; // width of each square
-var counter = 0; //counter for number of times a level has been played
+var w = 400; // width of each square
+var counter = 1; //counter for number of times a level has been played
 var grid = [];
 var stack = [];
 var current; // the player's current cell
 var currCellLoc = 0;
 var randRow = 0;
+var lastCol = 0;
+var level = 1;
 
 // Setup(): line pixel weight. Even numbers only
 var lineWeight = 6;
 
 function setup() {
-  createCanvas(1000, 1000);
+  createCanvas(800, 800);
   // frameRate(30);
   createNewMaze();
-  button();
+  newMazeButton();
+  previousLevelButton();
 }
 
-function button() {
-    var button = createButton("Next Level");
-    button.mousePressed(nextLevel);
-    button.position(width-100, height-50);
-    button.size(100, 50);
-    button.style('font-size : 20px; background-color: #555555; color:white');
-    /* if (levelCleared) {
-        button.show();
-        button.mousePressed(nextLevel);
-        button.position(800, 850);
-        button.size(100, 50);
-        button.style('font-size : 20px; background-color: #555555; color:white');
-    } else {
-        button.hide();
-    }
-    */
-    return;
+function newMazeButton() {
+  var button = createButton("New Maze");
+  button.mousePressed(createNewMaze);
+  button.position(width-100, height-50);
+  button.size(100, 50);
+  button.style('font-size : 20px; background-color: #555555; color:white');
+  return;
 }
+
+function previousLevelButton() {
+  var button = createButton("Previous Level");
+  button.mousePressed(previousLevel);
+  button.position(width-210, height-50);
+  button.size(100, 50);
+  button.style('font-size : 20px; background-color: #555555; color:white');
+  return;
+}
+
+function playAgainButton() {
+  var button = createButton("Play Again");
+  button.position(width-320, height-50);
+  button.size(100, 50);
+  button.style('font-size : 20px; background-color: #555555; color:white');
+  button.mousePressed(playAgain);
+  return;
+}
+
 
 function nextLevel() {
-    if (counter % 3 === 0 &&  counter != 0) {
-      w /= 2;
-      counter = 0;
-    } else {
-      counter++;
-    }
+  if (counter % 3 === 0 &&  counter != 0) {
+    w /= 2;
+    level++;
     console.log("next level");
-    createNewMaze();
-    return;
+    counter = 1;
+  } else {
+    counter++;
+  }
+  console.log("Counter = "+counter);
+  createNewMaze();
+  return;
+}
+
+function previousLevel() {
+  if (level > 1) {
+    w *= 2;
+    level -= 1;
+    counter = 1;
+  } 
+  createNewMaze();
+  return;
+}
+
+function playAgain() {
+  w = w * (Math.pow(2, level-1));
+  level = 1;
+  counter = 1;
+  createNewMaze();
+  this.hide();
+  return;
 }
 
 // draw() loops forever until stopped. Set fps with frameRate(30)
@@ -140,13 +173,11 @@ function keyPressed() {
     }
   } else if (keyCode == ENTER) {
     console.log("enter");
-    counter++;
     createNewMaze();
     return;
-  } else if(keyCode == SHIFT) {
-    console.log("next level");
-    counter++;
-    nextLevel();
+  } else if(keyCode == SHIFT) { //previous level 
+    console.log("shift: previous level");
+    previousLevel();
   }
 
   if (next !== undefined) {
@@ -159,6 +190,7 @@ function keyPressed() {
     // Highlight the valid next position given by the user
     current = next;
     current.highlightPlayer(0, 255, 0, false);
+    current.mazeCleared(); 
   }
 }
 
@@ -241,11 +273,29 @@ function Cell(i, j) {
       rect(x + (lineWeight / 2), y + (lineWeight / 2), w, w);
 
       // Places endSquare on top
-      let lastCol = (Math.sqrt(grid.length)) - 1;
+      lastCol = (Math.sqrt(grid.length)) - 1;
       noStroke();
-      fill(51, 153, 51); // TarHeel blue background
+      fill(51, 153, 51); // dark green background
       rect(lastCol*w, randRow*w, w-5, w-5);
     }
+  }
+
+  //checks if current maze has been completed and goes to the next maze/level
+  // depending on the counter's value 
+  this.mazeCleared = function() {
+    var currRow = floor(currCellLoc / cols);
+    var currCol = (currCellLoc - (cols * currRow));
+    if (currRow === randRow &&  currCol === lastCol) {
+      console.log("same level: different maze");
+      if (level === 4 && counter % 3 === 0) {
+        //play "you win" sound
+        playAgainButton();
+        return;
+      }
+      nextLevel();
+    }
+    console.log("entered maze cleared function");
+    return;
   }
 
   // Specify an rgb value ranging from 0-255 for each
