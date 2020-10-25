@@ -370,7 +370,7 @@ function randomNumber(min, max) {
 }
 
 function moveUp() {
-  if (!canPlay()) return;
+  // if (!canPlay()) return;
   track.connect(panner).connect(audioContext.destination);
   // Reset panner position back to the center
   panner.positionX.value = originalPos.x;
@@ -399,7 +399,7 @@ function moveUp() {
 }
 
 function moveDown() {
-  if (!canPlay()) return;
+  // if (!canPlay()) return;
   // check if touchscreen
   // if (window.matchMedia("(pointer: coarse)").matches)
   track.connect(panner).connect(audioContext.destination);
@@ -432,7 +432,7 @@ function moveDown() {
 }
 
 function moveLeft() {
-  if (!canPlay()) return;
+  // if (!canPlay()) return;
   track.connect(panner).connect(audioContext.destination);
   // Reset panner position back to the center
   panner.positionX.value = originalPos.x;
@@ -459,13 +459,15 @@ function moveLeft() {
 }
 
 function moveRight() {
-  if (!canPlay()) return;
+  // if (!canPlay()) return;
+  alert("hi");
   track.connect(panner).connect(audioContext.destination);
 
   // Reset panner position back to the center
   panner.positionX.value = originalPos.x;
   panner.positionY.value = originalPos.y;
   panner.positionZ.value = originalPos.z;
+  alert("ohhh");
   console.log("right");
   let next = undefined;
   if (!current.walls[1]) {
@@ -690,5 +692,6 @@ function checkCanvasScreenSize() {
 }
 
 function canPlay() {
+  alert(document.getElementById("intro").style.display == "none");
   return document.getElementById("intro").style.display == "none";
 }
