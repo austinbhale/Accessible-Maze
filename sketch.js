@@ -402,7 +402,12 @@ function moveUp() {
 
 function moveDown() {
   if (!play) return;
-  track.connect(panner).connect(audioContext.destination);
+  // connect to panner only on non-touch device
+  if (!window.matchMedia("(pointer: coarse)").matches) {
+    track.connect(panner).connect(audioContext.destination);
+  }
+
+  alert("test!");
 
   // Reset panner position back to the center
   panner.positionX.value = originalPos.x;
