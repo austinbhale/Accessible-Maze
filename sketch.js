@@ -34,14 +34,9 @@ function preload() {
   imgSit = loadImage('imgs/sittersonhome.jpg');
 }
 
-function setup() {
-  // createCanvas(800, 800);
-  // frameRate(30);
-  // createNewMaze();
-  // newMazeButton();
-  // previousLevelButton();
-}
 /*
+function setup() {}
+
 function newMazeButton() {
   var button = createButton("New Maze");
   button.mousePressed(createNewMaze);
@@ -542,7 +537,7 @@ function adjustGoalSound() {
   if (!isMobile) {
     document.getElementById("ambient").volume = multiplier;
   } else {
-    mobileAmbientSound.volume = multiplier;
+    // mobileAmbientSound.volume = multiplier;
   }
 }
 
@@ -560,14 +555,15 @@ function createSound() {
   mobileFailSound = document.querySelector("#fail");
   nextLevelSound = document.querySelector('#nextlevel');
   ambientSound = document.querySelector('#ambient');
+
+  // Unfortunately, iOS and other mobile platforms don't allow for volume control. Removing goal sound
   // mobileAmbientSound = document.querySelector('#ambient');
-  mobileAmbientSound = new Audio("sounds/plaisted.mp3");
+  // mobileAmbientSound = new Audio("sounds/plaisted.mp3");
 
   if (isMobile) {
-    mobileAmbientSound.play();
-    mobileAmbientSound.loop = true;
+    // mobileAmbientSound.play();
+    // mobileAmbientSound.loop = true;
   } else {
-
     // pass track into audio context
     track = audioContext.createMediaElementSource(failSound);
     trackAmbient = audioContext.createMediaElementSource(ambientSound);
@@ -655,8 +651,8 @@ function createSound() {
     trackAmbient.connect(pannerAmbient).connect(audioContext.destination);
     ambientSound.play();
     document.getElementById("ambient").loop = true;
+    adjustGoalSound();
   }
-  adjustGoalSound();
 }
 
 document.documentElement.addEventListener(
