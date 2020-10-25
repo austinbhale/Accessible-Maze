@@ -654,9 +654,8 @@ function loadGame() {
 
     nextLevelSound = document.querySelector('#nextlevel')
     nextLevelSound.play();
-
-    createNewMaze();
     play = true;
+    createNewMaze();
     createSound();
   }
 }
