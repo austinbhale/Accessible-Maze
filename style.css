@@ -39,6 +39,7 @@ h1 {
 .column {
   flex: 50%;
   width: 100%;
+  height: 0;
 }
 
 #buttons {
