@@ -34,9 +34,10 @@ function preload() {
   imgSit = loadImage('imgs/sittersonhome.jpg');
 }
 
-/*
+
 function setup() {}
 
+/*
 function newMazeButton() {
   var button = createButton("New Maze");
   button.mousePressed(createNewMaze);
