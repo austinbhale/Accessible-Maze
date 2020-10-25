@@ -401,7 +401,6 @@ function moveUp() {
 function moveDown() {
   // if (!canPlay()) return;
   // check if touchscreen
-  // if (window.matchMedia("(pointer: coarse)").matches)
   track.connect(panner).connect(audioContext.destination);
 
   // Reset panner position back to the center
@@ -461,12 +460,17 @@ function moveLeft() {
 function moveRight() {
   // if (!canPlay()) return;
   alert("hi");
-  track.connect(panner).connect(audioContext.destination);
+  const userAgent = navigator.userAgent.toLowerCase();
+  const isTablet = /(ipad|tablet|(android(?!.*mobile))|(windows(?!.*phone)(.*touch))|kindle|playbook|silk|(puffin(?!.*(IP|AP|WP))))/.test(userAgent);
+  if (!isTablet) {
+    track.connect(panner).connect(audioContext.destination);
 
-  // Reset panner position back to the center
-  panner.positionX.value = originalPos.x;
-  panner.positionY.value = originalPos.y;
-  panner.positionZ.value = originalPos.z;
+    // Reset panner position back to the center
+    panner.positionX.value = originalPos.x;
+    panner.positionY.value = originalPos.y;
+    panner.positionZ.value = originalPos.z;
+  }
+
   alert("ohhh");
   console.log("right");
   let next = undefined;
