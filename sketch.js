@@ -1,5 +1,6 @@
 var cols, rows;
-var w = 400; // width of each square
+var w = 280; // width of each square
+var canvas, canvasSize = 560, canvasPosX, canvasPosY;
 var counter = 1; //counter for number of times a level has been played
 var grid = [];
 var stack = [];
@@ -73,14 +74,13 @@ function nextLevel() {
   if (counter % 3 === 0 && counter != 0) {
     w /= 2;
     level++;
-    console.log("Level: "+level);
+    console.log("Level: " + level);
     counter = 1;
   } else {
     counter++;
   }
   console.log("Counter = " + counter);
   createNewMaze();
-  document.getElementById("level").innerHTML=`Level: ${level}`;
   return;
 }
 
@@ -107,16 +107,19 @@ function playAgain() {
 // draw() loops forever until stopped. Set fps with frameRate(30)
 // function draw() {}
 
-// function windowResized() {
-//   resizeCanvas(windowWidth, windowHeight);
-//   createNewMaze();
-// }
+function windowResized() {
+  if (!checkCanvasScreenSize() && play && loaded) {
+    resizeCanvas(canvasSize, canvasSize);
+    canvas.position(canvasPosX, canvasPosY);
+    createNewMaze();
+  }
+}
 
 // Current cell goes back to the top left starting position.
 function createNewMaze() {
   if (document.activeElement != document.body) document.activeElement.blur();
   var playAgainButton = document.getElementById("play-again")
-  playAgainButton.style.display="none";
+  playAgainButton.style.display = "none";
   clear();
   grid = [];
   stack = [];
@@ -169,7 +172,8 @@ function createNewMaze() {
   line(width, height, width, 0);
   line(width, 0, 0, 0);
 
-  adjustPlaistedSound();
+  adjustGoalSound();
+  document.getElementById("level").innerHTML = `Level: ${level}`;
 }
 
 // More key presses for p5js can be found at https://p5js.org/reference/#/p5/keyPressed
@@ -308,7 +312,6 @@ function Cell(i, j) {
         //play "you win" sound
         var playAgainButton = document.getElementById("play-again")
         playAgainButton.style.display = "block";
-        return;
       }
       profIdx++;
       profIdx = (profIdx > 11) ? 0 : profIdx;
@@ -390,10 +393,10 @@ function moveUp() {
     panner.positionY.value += 5000;
     failSound.play()
   }
-  document.getElementById("upArrow").style.backgroundColor="green";
-    setTimeout(function(){
-      document.getElementById("upArrow").style.backgroundColor="#4B9CD3";
-    },200);
+  document.getElementById("upArrow").style.backgroundColor = "green";
+  setTimeout(function () {
+    document.getElementById("upArrow").style.backgroundColor = "#4B9CD3";
+  }, 200);
   movePlayer(next);
 }
 
@@ -421,10 +424,10 @@ function moveDown() {
     panner.positionY.value -= 5000;
     failSound.play()
   }
-  document.getElementById("downArrow").style.backgroundColor="green";
-    setTimeout(function(){
-      document.getElementById("downArrow").style.backgroundColor="#4B9CD3";
-    },200);
+  document.getElementById("downArrow").style.backgroundColor = "green";
+  setTimeout(function () {
+    document.getElementById("downArrow").style.backgroundColor = "#4B9CD3";
+  }, 200);
   movePlayer(next);
 }
 
@@ -448,10 +451,10 @@ function moveLeft() {
     panner.positionX.value -= 5000;
     failSound.play()
   }
-  document.getElementById("leftArrow").style.backgroundColor="green";
-    setTimeout(function(){
-      document.getElementById("leftArrow").style.backgroundColor="#4B9CD3";
-    },200);
+  document.getElementById("leftArrow").style.backgroundColor = "green";
+  setTimeout(function () {
+    document.getElementById("leftArrow").style.backgroundColor = "#4B9CD3";
+  }, 200);
   movePlayer(next);
 }
 
@@ -476,10 +479,10 @@ function moveRight() {
     panner.positionX.value += 5000;
     failSound.play()
   }
-  document.getElementById("rightArrow").style.backgroundColor="green";
-    setTimeout(function(){
-      document.getElementById("rightArrow").style.backgroundColor="#4B9CD3";
-    },200);
+  document.getElementById("rightArrow").style.backgroundColor = "green";
+  setTimeout(function () {
+    document.getElementById("rightArrow").style.backgroundColor = "#4B9CD3";
+  }, 200);
   movePlayer(next);
 }
 
@@ -497,20 +500,24 @@ function movePlayer(next) {
     current.highlightPlayer(0, 255, 0, false);
     current.mazeCleared();
 
-    adjustPlaistedSound();
+    adjustGoalSound();
   }
 }
 
-function adjustPlaistedSound() {
+// logarithmic volume from the player to the destination point (i.e. Sitterson)
+function adjustGoalSound() {
+  let audioSrcVolPercentage = 0.5; // max volume percentage of the audio source
+  audioSrcVolPercentage *= 2; // adjust for volume when 1 row or col away from the final point
+
   let rowDiff = abs(randRow - getCurrRow());
   let colDiff = abs(lastCol - getCurrCol());
-  let amplifyZ = rowDiff + colDiff;
-  let div = (rows + cols - 2);
-  div = (div <= 0) ? 0.0001 : div; // make sure we don't divide by zero but not necessary
-  let multiplier = amplifyZ / div;
-  multiplier -= 0.5 / div;
-  multiplier = (1 - multiplier) * 0.25;
-  multiplier = (multiplier <= 0) ? 0.0001 : multiplier; // again, probably not necessary but safe
+  let cellDiff = rowDiff + colDiff;
+
+  let maxCellDistance =  rows + cols - 2; // from one corner to the opposite corner
+
+  let multiplier = Math.pow(2, maxCellDistance - cellDiff) / Math.pow(2, maxCellDistance);
+  multiplier *= audioSrcVolPercentage;
+
   console.log('plaisted volume: ' + multiplier);
   document.getElementById("ambient").volume = multiplier;
 }
@@ -610,7 +617,7 @@ function createSound() {
   })
 
   // pannerAmbient.positionZ.value += 9000;
-  adjustPlaistedSound();
+  adjustGoalSound();
 
   ambientCurrPos = { x: posX, y: posY, z: posZ - 5 + 9000 };
   ambientOriginalPos = ambientCurrPos;
@@ -631,29 +638,14 @@ document.documentElement.addEventListener(
   })
 
 document.body.onkeyup = function (e) {
-  if (e.keyCode == 32) {
-    if (!play && loaded) {
-
-      let cnv = createCanvas(800, 800);
-      cnv.position(50, 100);
-      document.getElementById("intro").style.display = 'none';
-      document.getElementById("buttons").style.display = 'block';
-      document.getElementById("startGameBtn").style.display = 'none';
-
-      nextLevelSound = document.querySelector('#nextlevel')
-      nextLevelSound.play();
-
-      createNewMaze();
-      createSound();
-      play = true;
-    }
-  }
+  if (e.keyCode == 32) loadGame();
 }
 
 function loadGame() {
   if (!play && loaded) {
-    let cnv = createCanvas(800, 800);
-    cnv.position(50, 100);
+    checkCanvasScreenSize();
+    canvas = createCanvas(canvasSize, canvasSize);
+    canvas.position(canvasPosX, canvasPosY);
     document.getElementById("intro").style.display = 'none';
     document.getElementById("startGameBtn").style.display = 'none';
     document.getElementById("buttons").style.display = 'block';
@@ -680,9 +672,21 @@ window.addEventListener('load', function () {
     clearInterval(tid);
     loaded = true;
   }
+  document.getElementById("level").innerHTML = `Level: ${level}`;
 })
 
-window.onload = function() {
-  document.getElementById("level").innerHTML=`Level: ${level}`;
- }
-
+function checkCanvasScreenSize() {
+  let tempSize = canvasSize;
+  if (window.innerWidth < 1250) {
+    w = 240 / level;
+    canvasSize = 480;
+    canvasPosX = 5;
+    canvasPosY = 100;
+  } else {
+    w = 280 / level;
+    canvasSize = 560;
+    canvasPosX = 50;
+    canvasPosY = 100;
+  }
+  return tempSize == canvasSize;
+}
