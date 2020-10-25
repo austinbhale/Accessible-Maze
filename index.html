@@ -20,12 +20,10 @@
     <br>
     <span> <b> Solve each maze to safely get each professor back to their beloved building. </b> </span>
 
-
-  <div>
-    <button id="startGameBtn" onclick="loadGame()" type="button">Click here or press <span>
-        <bold> space </bold>
-      </span> to play!</button>
-  </div>
+  <div></div>
+  <button type="button" id="startGameBtn" onclick="loadGame()" type="button">Click here or press <span>
+      <bold> space </bold>
+    </span> to play!</button>
   </p>
   <!-- <script class="maze" src="sketch-kavish.js"></script> -->
   <!-- <h3>Press space to play</h3> -->
@@ -37,61 +35,42 @@
       <div id="buttons" class="buttons">
         <div id="level" onload="displayLevel();"></div>
         <div class="grid-container">
-          <div class="grid-item"></div>
-          <div class="grid-item">       
-            <button id="upArrow" onclick="moveUp()">
-              &uarr;
-            </button>
-          </div>
+          <div></div>
+          <button type="button" id="upArrow" onclick="moveUp()">
+            &uarr;
+          </button>
 
-          <div class="grid-item"></div>
+          <div></div>
 
-          <div class="grid-item">
-            <button id="leftArrow" class="horizontal-button" onclick="moveLeft()">
-              &larr;
-            </button>
-          </div>
+          <button type="button" id="leftArrow" class="horizontal-button" onclick="moveLeft()">
+            &larr;
+          </button>
 
-          <div class="grid-item"></div>
+          <div></div>
 
-          <div>
-            <button id="rightArrow" class="horizontal-button" onclick="moveRight()">
-              &rarr;
-            </button>
-          </div>
+          <button type="button" id="rightArrow" class="horizontal-button" onclick="moveRight()">
+            &rarr;
+          </button>
 
-          <div class="grid-item"></div>
+          <div></div>
 
-          <div class="grid-item">
-            <button id="downArrow" onclick="moveDown()">
-              &darr;
-            </button>
-          </div>
-
-          <!-- <div class="grid-item"></div>     -->
-          <!-- </div> -->
-
-          <!-- <div class="grid-container"> -->
+          <button type="button" id="downArrow" onclick="moveDown()">
+            &darr;
+          </button>
           <br>
-          <div class="grid-item-left">
-            <button onclick="previousLevel()">Previous Level</button>
-          </div>
+          <button type="button" onclick="previousLevel()">Previous Level</button>
 
-          <div>
-            <button id="play-again" onClick="playAgain()"> Play Again</button>
-          </div>
-          <div class="grid-item-right">
-            <button onclick="createNewMaze()">New Maze</button>
-          </div>
+          <button type="button" id="play-again" onClick="playAgain()"> Play Again</button>
+          <button type="button" onclick="createNewMaze()">New Maze</button>
           <div class="grid-item-left"></div>
-          <div class="grid-item"></div>
+          <div></div>
         </div>
         <!-- <div id="other-grid-container"> -->
         <!-- <div class="grid-item-left"></div>
-        <div class="grid-item"></div>
+        <div></div>
         <div class="vertical-center"></div>
         <div>
-          <button id="play-again" onClick="playAgain()"> Play Again</button>
+          <button type="button" id="play-again" onClick="playAgain()"> Play Again</button>
         </div> -->
         <!-- </div> -->
       </div>

@@ -100,7 +100,7 @@ function playAgain() {
   level = 1;
   counter = 1;
   createNewMaze();
-  playAgainButton.style.display = "none";
+  playAgainButton.style.visibility = "hidden";
   return;
 }
 
@@ -119,7 +119,7 @@ function windowResized() {
 function createNewMaze() {
   if (document.activeElement != document.body) document.activeElement.blur();
   var playAgainButton = document.getElementById("play-again")
-  playAgainButton.style.display = "none";
+  playAgainButton.style.visibility = "hidden";
   clear();
   grid = [];
   stack = [];
@@ -311,7 +311,7 @@ function Cell(i, j) {
       if (level === 4 && counter % 3 === 0) {
         //play "you win" sound
         var playAgainButton = document.getElementById("play-again")
-        playAgainButton.style.display = "block";
+        playAgainButton.style.visibility = "visible";
       }
       profIdx++;
       profIdx = (profIdx > 11) ? 0 : profIdx;
@@ -513,7 +513,7 @@ function adjustGoalSound() {
   let colDiff = abs(lastCol - getCurrCol());
   let cellDiff = rowDiff + colDiff;
 
-  let maxCellDistance =  rows + cols - 2; // from one corner to the opposite corner
+  let maxCellDistance = rows + cols - 2; // from one corner to the opposite corner
 
   let multiplier = Math.pow(2, maxCellDistance - cellDiff) / Math.pow(2, maxCellDistance);
   multiplier *= audioSrcVolPercentage;
