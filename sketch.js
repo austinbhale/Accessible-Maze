@@ -370,12 +370,13 @@ function randomNumber(min, max) {
 }
 
 function moveUp() {
-  // if (!canPlay()) return;
-  track.connect(panner).connect(audioContext.destination);
-  // Reset panner position back to the center
-  panner.positionX.value = originalPos.x;
-  panner.positionY.value = originalPos.y;
-  panner.positionZ.value = originalPos.z;
+  if (!detectMobileBrowser()) {
+    track.connect(panner).connect(audioContext.destination);
+    // Reset panner position back to the center
+    panner.positionX.value = originalPos.x;
+    panner.positionY.value = originalPos.y;
+    panner.positionZ.value = originalPos.z;
+  }
   console.log("up");
   let next = undefined;
   if (!current.walls[0]) {
@@ -399,14 +400,14 @@ function moveUp() {
 }
 
 function moveDown() {
-  // if (!canPlay()) return;
-  // check if touchscreen
-  track.connect(panner).connect(audioContext.destination);
+  if (!detectMobileBrowser()) {
+    track.connect(panner).connect(audioContext.destination);
 
-  // Reset panner position back to the center
-  panner.positionX.value = originalPos.x;
-  panner.positionY.value = originalPos.y;
-  panner.positionZ.value = originalPos.z;
+    // Reset panner position back to the center
+    panner.positionX.value = originalPos.x;
+    panner.positionY.value = originalPos.y;
+    panner.positionZ.value = originalPos.z;
+  }
   let next = undefined;
   console.log("down");
   // audioContext.close()
@@ -431,12 +432,14 @@ function moveDown() {
 }
 
 function moveLeft() {
-  // if (!canPlay()) return;
-  track.connect(panner).connect(audioContext.destination);
-  // Reset panner position back to the center
-  panner.positionX.value = originalPos.x;
-  panner.positionY.value = originalPos.y;
-  panner.positionZ.value = originalPos.z;
+  if (!detectMobileBrowser()) {
+
+    track.connect(panner).connect(audioContext.destination);
+    // Reset panner position back to the center
+    panner.positionX.value = originalPos.x;
+    panner.positionY.value = originalPos.y;
+    panner.positionZ.value = originalPos.z;
+  }
   let next = undefined;
   console.log("left");
   if (!current.walls[3]) {
@@ -458,8 +461,6 @@ function moveLeft() {
 }
 
 function moveRight() {
-  // if (!canPlay()) return;
-  alert(detectMobileBrowser());
   if (!detectMobileBrowser()) {
     track.connect(panner).connect(audioContext.destination);
 
@@ -469,7 +470,6 @@ function moveRight() {
     panner.positionZ.value = originalPos.z;
   }
 
-  alert("ohhh");
   console.log("right");
   let next = undefined;
   if (!current.walls[1]) {
@@ -694,21 +694,15 @@ function checkCanvasScreenSize() {
 }
 
 function canPlay() {
-  alert(document.getElementById("intro").style.display == "none");
   return document.getElementById("intro").style.display == "none";
 }
 
 function detectMobileBrowser() {
-  if (navigator.userAgent.match(/Android/i)
+  return (navigator.userAgent.match(/Android/i)
     || navigator.userAgent.match(/webOS/i)
     || navigator.userAgent.match(/iPhone/i)
     || navigator.userAgent.match(/iPad/i)
     || navigator.userAgent.match(/iPod/i)
     || navigator.userAgent.match(/BlackBerry/i)
-    || navigator.userAgent.match(/Windows Phone/i)) {
-    a = true;
-  } else {
-    a = false;
-  }
-  return a;
+    || navigator.userAgent.match(/Windows Phone/i));
 }
