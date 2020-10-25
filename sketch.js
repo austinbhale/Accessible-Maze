@@ -459,10 +459,8 @@ function moveLeft() {
 
 function moveRight() {
   // if (!canPlay()) return;
-  alert("hi");
-  const userAgent = navigator.userAgent.toLowerCase();
-  const isTablet = /(ipad|tablet|(android(?!.*mobile))|(windows(?!.*phone)(.*touch))|kindle|playbook|silk|(puffin(?!.*(IP|AP|WP))))/.test(userAgent);
-  if (!isTablet) {
+  alert(detectMobileBrowser());
+  if (!detectMobileBrowser()) {
     track.connect(panner).connect(audioContext.destination);
 
     // Reset panner position back to the center
@@ -698,4 +696,19 @@ function checkCanvasScreenSize() {
 function canPlay() {
   alert(document.getElementById("intro").style.display == "none");
   return document.getElementById("intro").style.display == "none";
+}
+
+function detectMobileBrowser() {
+  if (navigator.userAgent.match(/Android/i)
+    || navigator.userAgent.match(/webOS/i)
+    || navigator.userAgent.match(/iPhone/i)
+    || navigator.userAgent.match(/iPad/i)
+    || navigator.userAgent.match(/iPod/i)
+    || navigator.userAgent.match(/BlackBerry/i)
+    || navigator.userAgent.match(/Windows Phone/i)) {
+    a = true;
+  } else {
+    a = false;
+  }
+  return a;
 }
