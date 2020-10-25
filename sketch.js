@@ -11,6 +11,8 @@ var lastCol = 0;
 var level = 1;
 var profIdx = 0;
 
+var isMobile = detectMobileBrowser();
+
 // Setup(): line pixel weight. Even numbers only
 var lineWeight = 6;
 
@@ -370,7 +372,7 @@ function randomNumber(min, max) {
 }
 
 function moveUp() {
-  if (!detectMobileBrowser()) {
+  if (!isMobile) {
     track.connect(panner).connect(audioContext.destination);
     // Reset panner position back to the center
     panner.positionX.value = originalPos.x;
@@ -385,12 +387,14 @@ function moveUp() {
     next = grid[currCellLoc];
     (isFinalRowCol()) ? nextLevelSound.play() : successSound.play();
     document.getElementById("upArrow").focus();
-
-
   } else {
     console.log("hit a wall...")
-    panner.positionY.value += 5000;
-    failSound.play()
+    if (!isMobile) {
+      panner.positionY.value += 5000;
+      failSound.play()
+    } else {
+      mobileFailSound.play();
+    }
   }
   document.getElementById("upArrow").style.backgroundColor = "green";
   setTimeout(function () {
@@ -400,7 +404,7 @@ function moveUp() {
 }
 
 function moveDown() {
-  if (!detectMobileBrowser()) {
+  if (!isMobile) {
     track.connect(panner).connect(audioContext.destination);
 
     // Reset panner position back to the center
@@ -421,8 +425,12 @@ function moveDown() {
     document.getElementById("downArrow").focus();
   } else {
     console.log("hit a wall...")
-    panner.positionY.value -= 5000;
-    failSound.play()
+    if (!isMobile) {
+      panner.positionY.value -= 5000;
+      failSound.play()
+    } else {
+      mobileFailSound.play();
+    }
   }
   document.getElementById("downArrow").style.backgroundColor = "green";
   setTimeout(function () {
@@ -432,8 +440,7 @@ function moveDown() {
 }
 
 function moveLeft() {
-  if (!detectMobileBrowser()) {
-
+  if (!isMobile) {
     track.connect(panner).connect(audioContext.destination);
     // Reset panner position back to the center
     panner.positionX.value = originalPos.x;
@@ -450,8 +457,12 @@ function moveLeft() {
     document.getElementById("leftArrow").focus();
   } else {
     console.log("hit a wall...")
-    panner.positionX.value -= 5000;
-    failSound.play()
+    if (!isMobile) {
+      panner.positionX.value -= 5000;
+      failSound.play()
+    } else {
+      mobileFailSound.play();
+    }
   }
   document.getElementById("leftArrow").style.backgroundColor = "green";
   setTimeout(function () {
@@ -461,7 +472,7 @@ function moveLeft() {
 }
 
 function moveRight() {
-  if (!detectMobileBrowser()) {
+  if (!isMobile) {
     track.connect(panner).connect(audioContext.destination);
 
     // Reset panner position back to the center
@@ -480,8 +491,12 @@ function moveRight() {
     document.getElementById("rightArrow").focus();
   } else {
     console.log("hit a wall...")
-    panner.positionX.value += 5000;
-    failSound.play()
+    if (!isMobile) {
+      panner.positionX.value += 5000;
+      failSound.play()
+    } else {
+      mobileFailSound.play();
+    }
   }
   document.getElementById("rightArrow").style.backgroundColor = "green";
   setTimeout(function () {
@@ -529,106 +544,111 @@ function adjustGoalSound() {
 // Global vars for audio
 var track, audioContext, successSound, nextLevelSound, panner, originalPos;
 var ambientSound, pannerAmbient, ambientCurrPos, ambientOriginalPos;
+var mobileAmbientSound, mobileFailSound;
 function createSound() {
   // establish audio context
   const AudioContext = window.AudioContext || window.webkitAudioContext;
   audioContext = new AudioContext;
   // get audio element
-  successSound = document.querySelector('#success')
-  failSound = document.querySelector("#fail")
-  nextLevelSound = document.querySelector('#nextlevel')
-  ambientSound = document.querySelector('#ambient')
+  successSound = document.querySelector('#success');
+  failSound = document.querySelector("#fail");
+  mobileFailSound = document.querySelector("#fail");
+  nextLevelSound = document.querySelector('#nextlevel');
+  ambientSound = document.querySelector('#ambient');
+  mobileAmbientSound = document.querySelector('#ambient');
 
-  // pass track into audio context
-  track = audioContext.createMediaElementSource(failSound);
-  trackAmbient = audioContext.createMediaElementSource(ambientSound);
-  // connect track to context
-  // track.connect(audioContext.destination);
+  if (isMobile) {
+    mobileAmbientSound.play();
+  } else {
 
-  // listener for the specific context
-  let listener = audioContext.listener;
+    // pass track into audio context
+    track = audioContext.createMediaElementSource(failSound);
+    trackAmbient = audioContext.createMediaElementSource(ambientSound);
+    // connect track to context
+    // track.connect(audioContext.destination);
 
-
-  // set in the center of the screen
-  const posX = window.innerWidth / 2;
-  const posY = window.innerHeight / 2;
-  const posZ = 300;
-  originalPos = { x: posX, y: posY, z: posZ - 5 };
-
-  // TODO: maybe find a way to attach it somehow?
-  listener.forwardX.value = 0;
-  listener.forwardY.value = 0;
-  listener.upZ.value = 0;
-
-  // situate the listener object
-  listener.positionX.value = originalPos.x;
-  listener.positionY.value = originalPos.y;
-  listener.positionZ.value = originalPos.z;
+    // listener for the specific context
+    let listener = audioContext.listener;
 
 
-  const pannerModel = 'HRTF';
-  const innerCone = 60;
-  const outerCone = 90;
-  const outerGain = 0.3;
-  const distanceModel = 'linear';
-  const maxDistance = 10000;
-  const refDistance = 1;
-  const rollOff = 10;
-  const positionX = posX;
-  const positionY = posY;
-  const positionZ = posZ;
-  const orientationX = 0.0;
-  const orientationY = 0.0;
-  const orientationZ = -1.0;
+    // set in the center of the screen
+    const posX = window.innerWidth / 2;
+    const posY = window.innerHeight / 2;
+    const posZ = 300;
+    originalPos = { x: posX, y: posY, z: posZ - 5 };
+
+    // TODO: maybe find a way to attach it somehow?
+    listener.forwardX.value = 0;
+    listener.forwardY.value = 0;
+    listener.upZ.value = 0;
+
+    // situate the listener object
+    listener.positionX.value = originalPos.x;
+    listener.positionY.value = originalPos.y;
+    listener.positionZ.value = originalPos.z;
 
 
-  panner = new PannerNode(audioContext, {
-    panningModel: pannerModel,
-    distanceModel: distanceModel,
-    positionX: positionX,
-    positionY: positionY,
-    positionZ: positionZ,
-    orientationX: orientationX,
-    orientationY: orientationY,
-    orientationZ: orientationZ,
-    refDistance: refDistance,
-    maxDistance: maxDistance,
-    rolloffFactor: rollOff,
-    coneInnerAngle: innerCone,
-    coneOuterAngle: outerCone,
-    coneOuterGain: outerGain
-  })
+    const pannerModel = 'HRTF';
+    const innerCone = 60;
+    const outerCone = 90;
+    const outerGain = 0.3;
+    const distanceModel = 'linear';
+    const maxDistance = 10000;
+    const refDistance = 1;
+    const rollOff = 10;
+    const positionX = posX;
+    const positionY = posY;
+    const positionZ = posZ;
+    const orientationX = 0.0;
+    const orientationY = 0.0;
+    const orientationZ = -1.0;
 
-  const ambientInnerCone = 30;
-  const ambientOuterCone = 45;
-  const ambientOuterGain = 0.15;
 
-  pannerAmbient = new PannerNode(audioContext, {
-    panningModel: pannerModel,
-    distanceModel: distanceModel,
-    positionX: positionX,
-    positionY: positionY,
-    positionZ: positionZ,
-    orientationX: orientationX,
-    orientationY: orientationY,
-    orientationZ: orientationZ,
-    refDistance: refDistance,
-    maxDistance: maxDistance,
-    rolloffFactor: rollOff,
-    coneInnerAngle: ambientInnerCone,
-    coneOuterAngle: ambientOuterCone,
-    coneOuterGain: ambientOuterGain
-  })
+    panner = new PannerNode(audioContext, {
+      panningModel: pannerModel,
+      distanceModel: distanceModel,
+      positionX: positionX,
+      positionY: positionY,
+      positionZ: positionZ,
+      orientationX: orientationX,
+      orientationY: orientationY,
+      orientationZ: orientationZ,
+      refDistance: refDistance,
+      maxDistance: maxDistance,
+      rolloffFactor: rollOff,
+      coneInnerAngle: innerCone,
+      coneOuterAngle: outerCone,
+      coneOuterGain: outerGain
+    })
 
-  // pannerAmbient.positionZ.value += 9000;
+    const ambientInnerCone = 30;
+    const ambientOuterCone = 45;
+    const ambientOuterGain = 0.15;
+
+    pannerAmbient = new PannerNode(audioContext, {
+      panningModel: pannerModel,
+      distanceModel: distanceModel,
+      positionX: positionX,
+      positionY: positionY,
+      positionZ: positionZ,
+      orientationX: orientationX,
+      orientationY: orientationY,
+      orientationZ: orientationZ,
+      refDistance: refDistance,
+      maxDistance: maxDistance,
+      rolloffFactor: rollOff,
+      coneInnerAngle: ambientInnerCone,
+      coneOuterAngle: ambientOuterCone,
+      coneOuterGain: ambientOuterGain
+    })
+
+    ambientCurrPos = { x: posX, y: posY, z: posZ - 5 + 9000 };
+    ambientOriginalPos = ambientCurrPos;
+
+    trackAmbient.connect(pannerAmbient).connect(audioContext.destination);
+    ambientSound.play();
+  }
   adjustGoalSound();
-
-  ambientCurrPos = { x: posX, y: posY, z: posZ - 5 + 9000 };
-  ambientOriginalPos = ambientCurrPos;
-  // const pannerOptions = { pan: 0 };
-  // const panner = new StereoPannerNode(audioContext, pannerOptions); 
-  trackAmbient.connect(pannerAmbient).connect(audioContext.destination);
-  ambientSound.play();
   document.getElementById("ambient").loop = true;
 }
 
