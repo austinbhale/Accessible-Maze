@@ -172,13 +172,13 @@ function createNewMaze() {
   line(width, height, width, 0);
   line(width, 0, 0, 0);
 
-  adjustGoalSound();
+  if (successSound) adjustGoalSound();
   document.getElementById("level").innerHTML = `Level: ${level}`;
 }
 
 // More key presses for p5js can be found at https://p5js.org/reference/#/p5/keyPressed
 function keyPressed() {
-  if (!canPlay()) return;
+  if (!canPlay() || isMobile) return;
   track.connect(panner).connect(audioContext.destination);
 
 
@@ -538,7 +538,12 @@ function adjustGoalSound() {
   multiplier *= audioSrcVolPercentage;
 
   console.log('plaisted volume: ' + multiplier);
-  document.getElementById("ambient").volume = multiplier;
+
+  if (!isMobile) {
+    document.getElementById("ambient").volume = multiplier;
+  } else {
+    mobileAmbientSound.volume = multiplier;
+  }
 }
 
 // Global vars for audio
@@ -555,10 +560,12 @@ function createSound() {
   mobileFailSound = document.querySelector("#fail");
   nextLevelSound = document.querySelector('#nextlevel');
   ambientSound = document.querySelector('#ambient');
-  mobileAmbientSound = document.querySelector('#ambient');
+  // mobileAmbientSound = document.querySelector('#ambient');
+  mobileAmbientSound = new Audio("sounds/plaisted.mp3");
 
   if (isMobile) {
     mobileAmbientSound.play();
+    mobileAmbientSound.loop = true;
   } else {
 
     // pass track into audio context
@@ -647,9 +654,9 @@ function createSound() {
 
     trackAmbient.connect(pannerAmbient).connect(audioContext.destination);
     ambientSound.play();
+    document.getElementById("ambient").loop = true;
   }
   adjustGoalSound();
-  document.getElementById("ambient").loop = true;
 }
 
 document.documentElement.addEventListener(
@@ -676,6 +683,7 @@ function loadGame() {
 
     nextLevelSound = document.querySelector('#nextlevel')
     nextLevelSound.play();
+    
     createNewMaze();
     createSound();
   }
