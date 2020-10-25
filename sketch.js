@@ -461,7 +461,6 @@ function moveLeft() {
 }
 
 function moveRight() {
-  alert(play);
   if (!play) return;
   track.connect(panner).connect(audioContext.destination);
 
@@ -657,8 +656,8 @@ function loadGame() {
     nextLevelSound.play();
 
     createNewMaze();
-    createSound();
     play = true;
+    createSound();
   }
 }
 
