@@ -14,8 +14,6 @@ var profIdx = 0;
 // Setup(): line pixel weight. Even numbers only
 var lineWeight = 6;
 
-var play = false;
-
 var imgs = [];
 var imgSit;
 function preload() {
@@ -108,7 +106,7 @@ function playAgain() {
 // function draw() {}
 
 function windowResized() {
-  if (!checkCanvasScreenSize() && play && loaded) {
+  if (!checkCanvasScreenSize() && canPlay() && loaded) {
     resizeCanvas(canvasSize, canvasSize);
     canvas.position(canvasPosX, canvasPosY);
     createNewMaze();
@@ -178,7 +176,7 @@ function createNewMaze() {
 
 // More key presses for p5js can be found at https://p5js.org/reference/#/p5/keyPressed
 function keyPressed() {
-  if (!play) return;
+  if (!canPlay()) return;
   track.connect(panner).connect(audioContext.destination);
 
 
@@ -372,7 +370,7 @@ function randomNumber(min, max) {
 }
 
 function moveUp() {
-  if (!play) return;
+  if (!canPlay()) return;
   track.connect(panner).connect(audioContext.destination);
   // Reset panner position back to the center
   panner.positionX.value = originalPos.x;
@@ -401,7 +399,7 @@ function moveUp() {
 }
 
 function moveDown() {
-  if (!play) return;
+  if (!canPlay()) return;
   // check if touchscreen
   // if (window.matchMedia("(pointer: coarse)").matches)
   track.connect(panner).connect(audioContext.destination);
@@ -434,7 +432,7 @@ function moveDown() {
 }
 
 function moveLeft() {
-  if (!play) return;
+  if (!canPlay()) return;
   track.connect(panner).connect(audioContext.destination);
   // Reset panner position back to the center
   panner.positionX.value = originalPos.x;
@@ -461,7 +459,7 @@ function moveLeft() {
 }
 
 function moveRight() {
-  if (!play) return;
+  if (!canPlay()) return;
   track.connect(panner).connect(audioContext.destination);
 
   // Reset panner position back to the center
@@ -644,7 +642,7 @@ document.body.onkeyup = function (e) {
 }
 
 function loadGame() {
-  if (!play && loaded) {
+  if (loaded) {
     checkCanvasScreenSize();
     canvas = createCanvas(canvasSize, canvasSize);
     canvas.position(canvasPosX, canvasPosY);
@@ -654,7 +652,6 @@ function loadGame() {
 
     nextLevelSound = document.querySelector('#nextlevel')
     nextLevelSound.play();
-    play = true;
     createNewMaze();
     createSound();
   }
@@ -690,4 +687,8 @@ function checkCanvasScreenSize() {
     canvasPosY = 100;
   }
   return tempSize == canvasSize;
+}
+
+function canPlay() {
+  return document.getElementById("intro").style.display == "none";
 }
