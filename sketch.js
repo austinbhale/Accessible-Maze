@@ -1,15 +1,18 @@
 var cols, rows;
 var w = 280; // width of each square
 var canvas, canvasSize = 560, canvasPosX, canvasPosY;
-var counter = 1; //counter for number of times a level has been played
+var counter = 1; // counter for number of times a level has been played
 var grid = [];
 var stack = [];
 var current; // the player's current cell
-var currCellLoc = 0;
+var currCellLoc = 0; // 1d representation of the current cell's index
+
+// row and col of the final destination
 var randRow = 0;
 var lastCol = 0;
+
 var level = 1;
-var profIdx = 0;
+var profIdx = 0; // current professor image
 
 var isMobile = detectMobileBrowser();
 
@@ -34,8 +37,7 @@ function preload() {
   imgSit = loadImage('imgs/sittersonhome.jpg');
 }
 
-
-function setup() {}
+function setup() { }
 
 /*
 function newMazeButton() {
@@ -177,7 +179,6 @@ function keyPressed() {
   if (!canPlay() || isMobile) return;
   track.connect(panner).connect(audioContext.destination);
 
-
   // Reset panner position back to the center
   panner.positionX.value = originalPos.x;
   panner.positionY.value = originalPos.y;
@@ -199,8 +200,6 @@ function keyPressed() {
     console.log("shift: previous level");
     previousLevel();
   }
-
-  // audioContext.close()
 }
 
 // Setup()
@@ -381,7 +380,7 @@ function moveUp() {
     console.log("SUCCESS!")
     currCellLoc -= cols;
     next = grid[currCellLoc];
-    (isFinalRowCol()) ? nextLevelSound.play() : successSound.play();
+    stopAndPlaySound();
     document.getElementById("upArrow").focus();
   } else {
     console.log("hit a wall...")
@@ -417,7 +416,7 @@ function moveDown() {
     console.log("SUCCESS!")
     currCellLoc += cols;
     next = grid[currCellLoc];
-    (isFinalRowCol()) ? nextLevelSound.play() : successSound.play();
+    stopAndPlaySound();
     document.getElementById("downArrow").focus();
   } else {
     console.log("hit a wall...")
@@ -449,7 +448,7 @@ function moveLeft() {
     console.log("SUCCESS!")
     currCellLoc -= 1;
     next = grid[currCellLoc];
-    (isFinalRowCol()) ? nextLevelSound.play() : successSound.play();
+    stopAndPlaySound();
     document.getElementById("leftArrow").focus();
   } else {
     console.log("hit a wall...")
@@ -483,7 +482,7 @@ function moveRight() {
     console.log("SUCCESS!")
     currCellLoc += 1;
     next = grid[currCellLoc];
-    (isFinalRowCol()) ? nextLevelSound.play() : successSound.play();
+    stopAndPlaySound();
     document.getElementById("rightArrow").focus();
   } else {
     console.log("hit a wall...")
@@ -516,6 +515,18 @@ function movePlayer(next) {
     current.mazeCleared();
 
     adjustGoalSound();
+  }
+}
+
+function stopAndPlaySound() {
+  if (isFinalRowCol()) {
+    nextLevelSound.pause();
+    nextLevelSound.currentTime = 0;
+    nextLevelSound.play();
+  } else {
+    successSound.pause();
+    successSound.currentTime = 0;
+    successSound.play();
   }
 }
 
@@ -581,7 +592,6 @@ function createSound() {
     const posZ = 300;
     originalPos = { x: posX, y: posY, z: posZ - 5 };
 
-    // TODO: maybe find a way to attach it somehow?
     listener.forwardX.value = 0;
     listener.forwardY.value = 0;
     listener.upZ.value = 0;
@@ -656,19 +666,6 @@ function createSound() {
   }
 }
 
-document.documentElement.addEventListener(
-  "mousedown", function () {
-    if (window.Tone) {
-      if (window.Tone.context.state !== 'running') {
-        Tone.context.resume();
-      }
-    }
-  })
-
-document.body.onkeyup = function (e) {
-  if (e.keyCode == 32) loadGame();
-}
-
 function loadGame() {
   if (loaded) {
     checkCanvasScreenSize();
@@ -680,27 +677,11 @@ function loadGame() {
 
     nextLevelSound = document.querySelector('#nextlevel')
     nextLevelSound.play();
-    
+
     createNewMaze();
     createSound();
   }
 }
-
-var loaded = false;
-window.addEventListener('load', function () {
-  // set interval
-  var tid = setInterval(mycode, 100);
-  function mycode() {
-    var element = document.getElementById("defaultCanvas0");
-    if (element) abortTimer(tid);
-    console.log('hello');
-  }
-  function abortTimer() {
-    clearInterval(tid);
-    loaded = true;
-  }
-  document.getElementById("level").innerHTML = `Level: ${level}`;
-})
 
 function checkCanvasScreenSize() {
   let tempSize = canvasSize;
@@ -730,4 +711,34 @@ function detectMobileBrowser() {
     || navigator.userAgent.match(/iPod/i)
     || navigator.userAgent.match(/BlackBerry/i)
     || navigator.userAgent.match(/Windows Phone/i));
+}
+
+/// Listeners
+var loaded = false;
+window.addEventListener('load', function () {
+  // set interval
+  var tid = setInterval(mycode, 100);
+  function mycode() {
+    var element = document.getElementById("defaultCanvas0");
+    if (element) abortTimer(tid);
+    console.log('hello');
+  }
+  function abortTimer() {
+    clearInterval(tid);
+    loaded = true;
+  }
+  document.getElementById("level").innerHTML = `Level: ${level}`;
+})
+
+document.documentElement.addEventListener(
+  "mousedown", function () {
+    if (window.Tone) {
+      if (window.Tone.context.state !== 'running') {
+        Tone.context.resume();
+      }
+    }
+  })
+
+document.body.onkeyup = function (e) {
+  if (e.keyCode == 32) loadGame();
 }
