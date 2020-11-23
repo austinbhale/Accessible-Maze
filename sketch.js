@@ -14,7 +14,17 @@ var lastCol = 0;
 var level = 1;
 var profIdx = 0; // current professor image
 
+var synth = window.speechSynthesis;
+
 var isMobile = detectMobileBrowser();
+
+// get audio element
+var successSound = document.querySelector('#success');
+var failSound = document.querySelector("#fail");
+failSound.volume = 1;
+var mobileFailSound = document.querySelector("#fail");
+var nextLevelSound = document.querySelector('#nextlevel');
+var ambientSound = document.querySelector('#ambient');
 
 // Setup(): line pixel weight. Even numbers only
 var lineWeight = 6;
@@ -78,7 +88,6 @@ function nextLevel() {
     counter++;
   }
   console.log("Counter = " + counter);
-  createNewMaze();
   return;
 }
 
@@ -176,7 +185,7 @@ function createNewMaze() {
 
 // More key presses for p5js can be found at https://p5js.org/reference/#/p5/keyPressed
 function keyPressed() {
-  if (!canPlay() || isMobile) return;
+  if (!canPlay() || isMobile || !nextLevelSound.paused || spacePlayAgain) return;
   track.connect(panner).connect(audioContext.destination);
 
   // Reset panner position back to the center
@@ -302,15 +311,23 @@ function Cell(i, j) {
   this.mazeCleared = function () {
     if (isFinalRowCol()) {
       console.log("same level: different maze");
+      nextLevelSound.pause();
+      nextLevelSound.currentTime = 0;
       nextLevelSound.play();
+
+      profIdx++;
+      profIdx = (profIdx > 11) ? 0 : profIdx;
+
       if (level === 4 && counter % 3 === 0) {
         //play "you win" sound
         var playAgainButton = document.getElementById("play-again")
         playAgainButton.style.visibility = "visible";
+        let msg = new SpeechSynthesisUtterance("You win! The professors are home... Press the space bar to play again.");
+        synth.speak(msg);
+        spacePlayAgain = true;
+      } else {
+        nextLevel();
       }
-      profIdx++;
-      profIdx = (profIdx > 11) ? 0 : profIdx;
-      nextLevel();
     }
     console.log("entered maze cleared function");
     return;
@@ -325,6 +342,16 @@ function Cell(i, j) {
     (erase) ? rect(x + (w / 6), y + (w / 6), w / 1.5, w / 1.5) : image(imgs[profIdx], x + (w / 4), y + (w / 4), w / 2, w / 2);
   }
 }
+
+nextLevelSound.addEventListener("ended", function () {
+  if (!spacePlayAgain) {
+    nextLevelSound.currentTime = 0;
+    console.log("ended");
+    createNewMaze();
+    let msg = new SpeechSynthesisUtterance('Level ' + level);
+    synth.speak(msg);
+  }
+});
 
 function getCurrRow() {
   return floor(currCellLoc / cols);
@@ -367,6 +394,8 @@ function randomNumber(min, max) {
 }
 
 function moveUp() {
+  if (!nextLevelSound.paused || spacePlayAgain) return;
+
   if (!isMobile) {
     track.connect(panner).connect(audioContext.destination);
     // Reset panner position back to the center
@@ -399,6 +428,8 @@ function moveUp() {
 }
 
 function moveDown() {
+  if (!nextLevelSound.paused || spacePlayAgain) return;
+
   if (!isMobile) {
     track.connect(panner).connect(audioContext.destination);
 
@@ -435,6 +466,8 @@ function moveDown() {
 }
 
 function moveLeft() {
+  if (!nextLevelSound.paused || spacePlayAgain) return;
+
   if (!isMobile) {
     track.connect(panner).connect(audioContext.destination);
     // Reset panner position back to the center
@@ -467,6 +500,8 @@ function moveLeft() {
 }
 
 function moveRight() {
+  if (!nextLevelSound.paused || spacePlayAgain) return;
+
   if (!isMobile) {
     track.connect(panner).connect(audioContext.destination);
 
@@ -519,11 +554,7 @@ function movePlayer(next) {
 }
 
 function stopAndPlaySound() {
-  if (isFinalRowCol()) {
-    nextLevelSound.pause();
-    nextLevelSound.currentTime = 0;
-    nextLevelSound.play();
-  } else {
+  if (!isFinalRowCol()) {
     successSound.pause();
     successSound.currentTime = 0;
     successSound.play();
@@ -532,7 +563,7 @@ function stopAndPlaySound() {
 
 // logarithmic volume from the player to the destination point (i.e. Sitterson)
 function adjustGoalSound() {
-  let audioSrcVolPercentage = 0.5; // max volume percentage of the audio source
+  let audioSrcVolPercentage = 0.25; // max volume percentage of the audio source
   audioSrcVolPercentage *= 2; // adjust for volume when 1 row or col away from the final point
 
   let rowDiff = abs(randRow - getCurrRow());
@@ -548,25 +579,20 @@ function adjustGoalSound() {
 
   if (!isMobile) {
     document.getElementById("ambient").volume = multiplier;
-  } else {
-    // mobileAmbientSound.volume = multiplier;
   }
+  //else {
+  //  mobileAmbientSound.volume = multiplier;
+  //}
 }
 
 // Global vars for audio
-var track, audioContext, successSound, nextLevelSound, panner, originalPos;
-var ambientSound, pannerAmbient, ambientCurrPos, ambientOriginalPos;
-var mobileAmbientSound, mobileFailSound;
+var track, audioContext, panner, originalPos;
+var pannerAmbient, ambientCurrPos, ambientOriginalPos;
+// var mobileAmbientSound;
 function createSound() {
   // establish audio context
   const AudioContext = window.AudioContext || window.webkitAudioContext;
   audioContext = new AudioContext;
-  // get audio element
-  successSound = document.querySelector('#success');
-  failSound = document.querySelector("#fail");
-  mobileFailSound = document.querySelector("#fail");
-  nextLevelSound = document.querySelector('#nextlevel');
-  ambientSound = document.querySelector('#ambient');
 
   // Unfortunately, iOS and other mobile platforms don't allow for volume control. Removing goal sound
   // mobileAmbientSound = document.querySelector('#ambient');
@@ -675,8 +701,8 @@ function loadGame() {
     document.getElementById("startGameBtn").style.display = 'none';
     document.getElementById("buttons").style.display = 'block';
 
-    nextLevelSound = document.querySelector('#nextlevel')
-    nextLevelSound.play();
+    // nextLevelSound = document.querySelector('#nextlevel')
+    // nextLevelSound.play();
 
     createNewMaze();
     createSound();
@@ -739,6 +765,22 @@ document.documentElement.addEventListener(
     }
   })
 
+var spaceLoad = false;
+var spacePlayAgain = false;
 document.body.onkeyup = function (e) {
-  if (e.keyCode == 32) loadGame();
+  if (e.keyCode == 32)
+    if (!spaceLoad) {
+      spaceLoad = true;
+      let msg = new SpeechSynthesisUtterance('Level ' + level);
+      synth.speak(msg);
+      loadGame();
+    } else if (spacePlayAgain) {
+      level = 1;
+      counter = 1;
+      synth.cancel();
+      let msg = new SpeechSynthesisUtterance('Level ' + level);
+      synth.speak(msg);
+      createNewMaze();
+      spacePlayAgain = false;
+    }
 }
