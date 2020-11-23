@@ -21,7 +21,6 @@ var isMobile = detectMobileBrowser();
 // get audio element
 var successSound = document.querySelector('#success');
 var failSound = document.querySelector("#fail");
-failSound.volume = 1;
 var mobileFailSound = document.querySelector("#fail");
 var nextLevelSound = document.querySelector('#nextlevel');
 var ambientSound = document.querySelector('#ambient');
@@ -757,12 +756,6 @@ window.addEventListener('load', function () {
   document.getElementById("level").innerHTML = `Level: ${level}`;
 })
 
-window.onload = function () {
-  if (synth.speaking) synth.cancel();
-  let msg = new SpeechSynthesisUtterance(document.getElementById("intro").textContent);
-  synth.speak(msg);
-}
-
 document.documentElement.addEventListener(
   "mousedown", function () {
     if (window.Tone) {
@@ -775,10 +768,10 @@ document.documentElement.addEventListener(
 var spaceLoad = false;
 var spacePlayAgain = false;
 document.body.onkeyup = function (e) {
-  if (e.keyCode == 32)
+  if (e.keyCode == 32) {
     if (!spaceLoad) {
       spaceLoad = true;
-      let msg = new SpeechSynthesisUtterance('Level ' + level);
+      let msg = new SpeechSynthesisUtterance('Level one');
       synth.speak(msg);
       loadGame();
     } else if (spacePlayAgain) {
@@ -790,4 +783,9 @@ document.body.onkeyup = function (e) {
       createNewMaze();
       spacePlayAgain = false;
     }
+  } else if (e.keyCode == 9 && !spaceLoad) { // tab
+    if (synth.speaking) synth.cancel();
+    let msg = new SpeechSynthesisUtterance(document.getElementById("intro").textContent);
+    synth.speak(msg);
+  }
 }
