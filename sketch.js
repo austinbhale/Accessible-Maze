@@ -694,6 +694,7 @@ function createSound() {
 
 function loadGame() {
   if (loaded) {
+    synth.cancel();
     checkCanvasScreenSize();
     canvas = createCanvas(canvasSize, canvasSize);
     canvas.position(canvasPosX, canvasPosY);
@@ -755,6 +756,12 @@ window.addEventListener('load', function () {
   }
   document.getElementById("level").innerHTML = `Level: ${level}`;
 })
+
+window.onload = function () {
+  if (synth.speaking) synth.cancel();
+  let msg = new SpeechSynthesisUtterance(document.getElementById("intro").textContent);
+  synth.speak(msg);
+}
 
 document.documentElement.addEventListener(
   "mousedown", function () {

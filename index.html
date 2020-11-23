@@ -10,21 +10,21 @@
 <body>
   <h1 class="title" title="Game Title">findSitterson(UNC-CS-professors);</h1>
   <div class="intro" id="intro">
-    <p title="Introduction and Instructions">Help! Because of online schooling, it's been so long
-      since the UNC CS professors have
-      gone on campus - so they've forgotten how to get to Sitterson!
+    <p title="Introduction and Instructions">Help! Because of online schooling, it's been so long since the UNC CS
+      professors have gone on campus - so they've forgotten how to get to Sitterson!
       <br>
       <br>
-      Use the arrow keys to go up, down, left, right. Press enter for a new maze and press shift for the previous level.
-      Each level has 3 mazes that you need to clear!
+      Use the arrow keys to go up, down, left, and right. Press enter for a new maze and press shift for the previous level. Each level has 3 mazes that you need to clear!
       <br>
       <br>
       <span> <b> Solve each maze to safely get each professor back to their beloved building. </b> </span>
     </p>
     <div></div>
-    <a href="javascript:void(0);" id="startGameBtn" onclick="loadGame()" type="button"><p>Click here or press <span>
-        <bold> space </bold>
-      </span> to play!</p></a>
+    <a href="javascript:void(0);" id="startGameBtn" onclick="loadGame()" type="button">
+      <p>Click here or press <span>
+          <bold>space</bold>
+        </span>to play!</p>
+    </a>
   </div>
   <!-- <script class="maze" src="sketch-kavish.js"></script> -->
   <!-- <h3>Press space to play</h3> -->
@@ -44,7 +44,9 @@
 
       <br>
 
-      <a href="javascript:void(0);" id="leftArrow" class="horizontal-button" onclick="moveLeft()"><p>&larr;</p></a>
+      <a href="javascript:void(0);" id="leftArrow" class="horizontal-button" onclick="moveLeft()">
+        <p>&larr;</p>
+      </a>
 
       <br>
 
@@ -58,9 +60,15 @@
         <p>&darr;</p>
       </a>
       <br>
-      <a href="javascript:void(0);" onclick="previousLevel()"><p>Previous Level</p></a>
-      <a href="javascript:void(0);" id="play-again" onClick="playAgain()"><p>Play Again</p></a>
-      <a href="javascript:void(0);" onclick="createNewMaze()"><p>New Maze</p></a>
+      <a href="javascript:void(0);" onclick="previousLevel()">
+        <p>Previous Level</p>
+      </a>
+      <a href="javascript:void(0);" id="play-again" onClick="playAgain()">
+        <p>Play Again</p>
+      </a>
+      <a href="javascript:void(0);" onclick="createNewMaze()">
+        <p>New Maze</p>
+      </a>
       <!-- <div id="other-grid-container"> -->
       <!-- <div class="grid-item-left"></div>
         <div></div>
